@@ -1,29 +1,25 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+  <div id="app" v-if="$store.state.loading === false">
     <router-view/>
   </div>
+  <div v-else>Loading...</div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<script>
+import "normalize.css";
+import Typography from "typography";
+import githubTheme from "typography-theme-github";
+const typography = new Typography(githubTheme);
+typography.injectStyles();
+export default {
+  name: "App",
+  mounted() {
+    this.$store.dispatch("initializeApp");
   }
-}
+};
+</script>
+
+
+<style lang="scss">
+@import "./styles/main.scss";
 </style>

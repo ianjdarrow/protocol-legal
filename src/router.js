@@ -1,23 +1,54 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Vue from "vue";
+import Router from "vue-router";
+import Login from "./views/Login.vue";
+import Dashboard from "./views/Dashboard.vue";
+import FilecoinAccess from "./views/FilecoinAccess.vue";
+import ManageFilecoinInvites from "./views/ManageFilecoinInvites.vue";
 
-Vue.use(Router)
+import store from "./store";
+
+Vue.use(Router);
+
+const checkLogin = (to, from, next) => {
+  const re = /^\w*@protocol\.ai$/;
+  const email = store.state.email;
+  if (re.test(email)) {
+    next();
+  } else {
+    next("/login");
+  }
+};
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Home
+      path: "/login",
+      name: "Login",
+      component: Login
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      path: "/dashboard",
+      name: "Dashboard",
+      component: Dashboard,
+      beforeEnter: checkLogin
+    },
+    {
+      path: "/request-invite",
+      name: "FilecoinAccess",
+      component: FilecoinAccess
+    },
+    {
+      path: "/manage-invites",
+      name: "ManageFilecoinInvites",
+      component: ManageFilecoinInvites
     }
+    // {
+    //   path: '/about',
+    //   name: 'about',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (about.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+    // }
   ]
-})
+});

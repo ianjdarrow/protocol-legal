@@ -1,0 +1,83 @@
+@import "./colors";
+
+button {
+  border: 2px solid $black;
+  background: transparent;
+  border-radius: 2px;
+  padding: 0.3rem 1.5rem 0.4rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.13s ease-in-out;
+  &:hover {
+    box-shadow: 0 4px 8px rgba($black, 0.2);
+    transform: translateY(-2px);
+  }
+  &.sm {
+    padding: 0.15rem 1rem 0.15rem 1rem;
+    border: 1.5px solid $black;
+    font-size: 80%;
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      opacity: 0.7;
+    }
+  }
+  &:disabled {
+    color: $black;
+    opacity: 0.6;
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  }
+  &.fullwidth {
+    width: 100%;
+  }
+}
+
+div.input {
+  position: relative;
+  label {
+    position: absolute;
+    z-index: 500;
+    font-weight: 500;
+    color: rgba(black, 0.3);
+    left: 0.4rem;
+    transform: translateY(3px);
+    font-size: 66%;
+  }
+  input {
+    background: white;
+    width: 100%;
+    padding: 1rem 0.25rem 0.25rem 0.4rem;
+    border: 1px solid rgba(black, 0.3);
+    border-radius: 2px;
+    overflow: hidden;
+    &.helper {
+      padding-left: 1.25rem;
+    }
+    &:focus {
+      border: 1px solid $black;
+      outline: none;
+    }
+  }
+  span.helper {
+    position: absolute;
+    left: 0.33rem;
+    top: 1rem;
+    color: rgba(black, 0.6);
+  }
+}
+.card {
+  border: 1px solid $black;
+  border-radius: 2px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  // max-width: 480px;
+  h3 {
+    margin: 0;
+  }
+}
