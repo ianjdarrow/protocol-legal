@@ -22,7 +22,11 @@ export default new Vuex.Store({
     db: null,
     provider: null,
     loading: true,
-    email: ""
+    email: "",
+    flash: {
+      active: false,
+      message: ""
+    }
   },
   mutations: {
     setFirebase(state, firebase) {
@@ -42,6 +46,18 @@ export default new Vuex.Store({
     },
     setEmail(state, email) {
       state.email = email;
+    },
+    setFlash(state, message) {
+      state.flash = {
+        active: true,
+        message
+      };
+    },
+    clearFlash(state) {
+      state.flash = {
+        active: false,
+        message: ""
+      };
     },
     logout(state) {
       state.email = "";

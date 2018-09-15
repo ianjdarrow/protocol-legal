@@ -12,7 +12,12 @@
     <Loader v-if="loading" />
     <div v-else v-for="invite in invites" class="invite-list" :key="invite.id">
       <span class="email">{{ invite.email }}</span>
-      <span class="github" :class="invite.github ? '' : 'muted'">{{ invite.github || "-" }}</span>
+      <span class="github">
+        <a :href="`https://github.com/${invite.github}`" v-if="invite.github">
+          {{ `@${invite.github}` }}
+        </a>
+        <span class="muted" v-else>-</span>
+      </span>
       <span class="name" :class="invite.name ? '' : 'muted'">{{ invite.name || "-" }}</span>
       <span class="invited" :class="invite.invited ? '' : 'muted'">{{ formatted(invite.invited) || "-" }}</span>
       <span class="accepted" :class="invite.accepted ? '' : 'muted'">{{ invite.accepted || "-" }}</span>

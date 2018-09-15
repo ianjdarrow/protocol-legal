@@ -6,9 +6,14 @@
         <button @click="toggleShow">
           {{ show ? 'Hide form' : 'Invite new user' }}
         </button>
-        <div>
+        <div class="filters">
+          <div class="pills mr-1">
+            <button class="sm pill active">All</button>
+            <button class="sm pill active">Pending</button>
+            <button class="sm pill active">Waiting</button>
+          </div>
           <div class="input search">
-            <label>Filter</label>
+            <label>Search</label>
             <input v-model="search">
           </div>
         </div>
@@ -52,11 +57,9 @@ export default {
   mounted() {
     this.updateInviteList();
     this.$store.state.db.collection("invites").onSnapshot(updates => {
-      console.log(updates);
       if (updates) {
         updates.forEach(update => {
           const data = update.data();
-          console.log(update);
           for (let i = 0; i < this.invites.length; i++) {
             if (this.invites[i].id == update.id) return;
           }
@@ -89,14 +92,23 @@ export default {
   computed: {
     filteredInvites: function() {
       const search = this.search.toLowerCase();
-      if (search.length === 0) return this.invites;
-      return this.invites.filter(i => {
-        return (
-          i.email.indexOf(search) >= 0 ||
-          i.github.indexOf(search) >= 0 ||
-          i.name.indexOf(search) >= 0
+      if (search.length === 0) {
+        return this.invites.sort(
+          (a, b) => new Date(b.invited) - new Date(a.invited)
         );
-      });
+      }
+      return this.invites
+        .filter(i => {
+          return (
+            i.email.indexOf(search) >= 0 ||
+            i.github.indexOf(search) >= 0 ||
+            i.name.indexOf(search) >= 0
+          );
+        })
+        .sort(
+          (a, b) =>
+            levenshteinDistance(a, search) > levenshteinDistance(b, search)
+        );
     },
     ...mapState({
       db: state => state.db
@@ -110,6 +122,16 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.filters {
+  display: flex;
+  flex-basis: 75%;
+  justify-content: flex-end;
+  align-items: center;
+}
+.pills {
+  display: flex;
+  justify-content: center;
 }
 .search {
   flex-basis: 33%;

@@ -46,10 +46,13 @@ export default {
       const email = this.form.email.toLowerCase();
       const github = this.form.github.toLowerCase();
       const alreadyAdded =
-        this.invites.filter(i => i.email === email || i.github === github)
-          .length > 0;
+        this.invites.filter(
+          i => i.email === email || (i.github && i.github === github)
+        ).length > 0;
       if (alreadyAdded) {
         console.log("already exists");
+        this.$store.commit("setFlash", "Already invited!");
+        // todo: point to entry
         return;
       }
       const payload = {
@@ -60,9 +63,17 @@ export default {
       };
       try {
         const result = await this.db.collection("invites").add(payload);
+        this.clearForm();
       } catch (err) {
         console.error(err);
       }
+    },
+    clearForm: function() {
+      this.form = {
+        email: "",
+        github: "",
+        name: ""
+      };
     }
   },
   computed: {
