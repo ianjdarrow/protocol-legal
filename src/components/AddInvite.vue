@@ -5,10 +5,10 @@
         <form @submit.prevent="handleSubmit">
           <div class="input mb-1">
             <label>Email</label>
-            <input type="email" v-model="form.email">
+            <input type="email" v-model="form.email" ref="email">
           </div>
           <div class="input mb-1">
-            <label>Name (optional)</label>
+            <label>Name</label>
             <input type="text" v-model="form.name">
           </div>
           <div class="input mb-1">
@@ -16,7 +16,7 @@
             <input type="text" class="helper" v-model="form.github">
             <span class="helper">@</span>
           </div>
-          <button type="submit" class="fullwidth sm">Send invite!</button>
+          <button type="submit" class="fullwidth sm" :disabled="!formValid">Send invite!</button>
         </form>
       </div>
     </transition>
@@ -38,7 +38,8 @@ export default {
         email: "",
         github: "",
         name: ""
-      }
+      },
+      loading: false
     };
   },
   methods: {
@@ -50,7 +51,6 @@ export default {
           i => i.email === email || (i.github && i.github === github)
         ).length > 0;
       if (alreadyAdded) {
-        console.log("already exists");
         this.$store.commit("setFlash", "Already invited!");
         // todo: point to entry
         return;
@@ -58,15 +58,26 @@ export default {
       const payload = {
         ...this.form,
         email: this.form.email.toLowerCase(),
-
+        invitedBy: this.email,
         invited: new Date().toISOString()
       };
+      this.loading = true;
       try {
         const result = await this.db.collection("invites").add(payload);
+        // result.id has the ID we need
+        console.log("Invite code:", result.id);
+        this.$store.commit("setFlash", `Invited ${this.form.email}!`);
+        setTimeout(() => this.$store.commit("clearFlash"), 2500);
         this.clearForm();
+        this.$refs.email.focus();
       } catch (err) {
         console.error(err);
+        this.$store.commit(
+          "setFlash",
+          "Error sending invite! Email ian@protocol.ai and tell him to fix it."
+        );
       }
+      this.loading = false;
     },
     clearForm: function() {
       this.form = {
@@ -77,11 +88,12 @@ export default {
     }
   },
   computed: {
-    inputValid: function() {
-      return emailRe.test(this.form.email);
+    formValid: function() {
+      return emailRe.test(this.form.email) && this.form.name;
     },
     ...mapState({
-      db: state => state.db
+      db: state => state.db,
+      email: state => state.email
     })
   }
 };

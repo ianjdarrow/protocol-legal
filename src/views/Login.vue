@@ -12,20 +12,27 @@ import { mapState } from "vuex";
 export default {
   name: "Login",
   methods: {
-    handleSignin: function() {
+    handleSignin: async function() {
       const user = this.firebase.auth().currentUser;
       const re = /^.*@protocol.ai$/;
       if (user && re.test(user.email)) {
         return this.$router.push("/dashboard");
       }
-      this.firebase
-        .auth()
-        .signInWithPopup(this.provider)
-        .then(result => {
-          this.$store.commit("setEmail", result.user.email);
-          this.$router.push("/dashboard");
-        })
-        .catch(error => console.error(error));
+      try {
+        const result = await this.firebase
+          .auth()
+          .signInWithPopup(this.provider);
+        const email = result.user.email;
+        if (!re.test(email)) throw new Error("Must be a protocol.ai email");
+        this.$store.commit("setEmail", email);
+        this.$router.push("/dashboard");
+      } catch (err) {
+        console.error(err);
+        this.$store.commit(
+          "setFlash",
+          "Please log in with a valid @protocol.ai email address"
+        );
+      }
     }
   },
   computed: {

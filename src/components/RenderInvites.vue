@@ -9,20 +9,23 @@
       <span class="granted">Granted</span>
       <span class="options"></span>
     </div>
+    <div class="no-results" v-if="!loading && invites.length === 0">No results</div>
     <Loader v-if="loading" />
-    <div v-else v-for="invite in invites" class="invite-list" :key="invite.id">
-      <span class="email">{{ invite.email }}</span>
-      <span class="github">
-        <a :href="`https://github.com/${invite.github}`" v-if="invite.github">
-          {{ `@${invite.github}` }}
-        </a>
-        <span class="muted" v-else>-</span>
-      </span>
-      <span class="name" :class="invite.name ? '' : 'muted'">{{ invite.name || "-" }}</span>
-      <span class="invited" :class="invite.invited ? '' : 'muted'">{{ formatted(invite.invited) || "-" }}</span>
-      <span class="accepted" :class="invite.accepted ? '' : 'muted'">{{ invite.accepted || "-" }}</span>
-      <span class="granted" :class="invite.granted ? '' : 'muted'">{{ invite.granted || "-" }}</span>
-      <span class="options"></span>
+    <div v-else>
+      <div v-for="invite in invites" class="invite-list" :key="invite.id">
+        <span class="email">{{ invite.email }}</span>
+        <span class="github">
+          <a :href="`https://github.com/${invite.github}`" v-if="invite.github">
+            {{ `@${invite.github}` }}
+          </a>
+          <span class="muted" v-else>-</span>
+        </span>
+        <span class="name" :class="invite.name ? '' : 'muted'">{{ invite.name || "-" }}</span>
+        <span class="invited" :class="invite.invited ? '' : 'muted'">{{ formatted(invite.invited) || "-" }}</span>
+        <span class="accepted" :class="invite.accepted ? '' : 'muted'">{{ formatted(invite.accepted) || "-" }}</span>
+        <span class="granted" :class="invite.granted ? '' : 'muted'">{{ invite.granted || "-" }}</span>
+        <span class="options"></span>
+      </div>
     </div>
   </div>
 </template>
@@ -36,7 +39,9 @@ export default {
   props: ["invites", "loading"],
   methods: {
     formatted: function(date) {
-      return format(date, "YYYY.MM.DD");
+      const formatted = format(date, "YYYY.MM.DD");
+      if (formatted == "Invalid Date") return "-";
+      return formatted;
     }
   }
 };
@@ -49,25 +54,25 @@ export default {
   padding-left: 5px;
   padding-right: 5px;
   .email {
-    flex-basis: 20%;
+    flex-basis: 23%;
   }
   .github {
-    flex-basis: 20%;
+    flex-basis: 18%;
   }
   .name {
     flex-basis: 20%;
   }
   .invited {
-    flex-basis: 11%;
+    flex-basis: 13%;
   }
   .accepted {
-    flex-basis: 11%;
+    flex-basis: 13%;
   }
   .granted {
-    flex-basis: 11%;
+    flex-basis: 13%;
   }
   .options {
-    flex-basis: 7%;
+    flex-basis: 0%;
   }
 }
 .invite-header {
@@ -85,5 +90,12 @@ export default {
 }
 .muted {
   color: rgba(black, 0.4) !important;
+}
+.no-results {
+  text-align: left;
+  padding-left: 5px;
+  padding-top: 1rem;
+  color: rgba(black, 0.4);
+  font-style: italic;
 }
 </style>

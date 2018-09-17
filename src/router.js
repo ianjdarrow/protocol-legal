@@ -33,7 +33,7 @@ export default new Router({
       beforeEnter: checkLogin
     },
     {
-      path: "/request-invite",
+      path: "/filecoin-invite/:token",
       name: "FilecoinAccess",
       component: FilecoinAccess
     },

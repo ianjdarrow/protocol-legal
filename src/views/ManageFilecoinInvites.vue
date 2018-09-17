@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :key="filter">
     <Nav />
     <div class="container">
       <div class="utility-row pb-1">
@@ -8,9 +8,9 @@
         </button>
         <div class="filters">
           <div class="pills mr-1">
-            <button class="sm pill active">All</button>
-            <button class="sm pill active">Pending</button>
-            <button class="sm pill active">Waiting</button>
+            <button class="sm pill" :class="filter === 'all' ? 'active' : ''" @click="updateFilter('all')">All</button>
+            <button class="sm pill" :class="filter === 'pending' ? 'active' : ''" @click="updateFilter('pending')">Pending</button>
+            <button class="sm pill" :class="filter === 'waiting' ? 'active' : ''" @click="updateFilter('waiting')">Waiting</button>
           </div>
           <div class="input search">
             <label>Search</label>
@@ -51,6 +51,7 @@ export default {
       show: window.localStorage.showInviteForm === "false" ? false : true,
       invites: [],
       search: "",
+      filter: "all",
       loading: true
     };
   },
@@ -87,6 +88,10 @@ export default {
       const show = !this.show;
       this.show = show;
       window.localStorage.showInviteForm = show;
+    },
+    updateFilter: function(f) {
+      this.filter = f;
+      this.$forceUpdate();
     }
   },
   computed: {
@@ -98,6 +103,11 @@ export default {
         );
       }
       return this.invites
+        .filter(i => {
+          if (this.filter === "all") return true;
+          if (this.filter === "pending") return i.invited && !i.accepted;
+          if (this.filter === "waiting") return i.accepted && !i.granted;
+        })
         .filter(i => {
           return (
             i.email.indexOf(search) >= 0 ||
