@@ -1,5 +1,5 @@
 <template>
-  <div :key="filter">
+  <div>
     <Nav />
     <div class="container">
       <div class="utility-row pb-1">
@@ -14,7 +14,7 @@
           </div>
           <div class="input search">
             <label>Search</label>
-            <input v-model="search">
+            <input v-model="search" @input="deriveFilteredInvites">
           </div>
         </div>
       </div>
@@ -50,64 +50,55 @@ export default {
     return {
       show: window.localStorage.showInviteForm === "false" ? false : true,
       invites: [],
+      filteredInvites: [],
       search: "",
       filter: "all",
       loading: true
     };
   },
-  mounted() {
-    this.updateInviteList();
+  async mounted() {
     this.$store.state.db.collection("invites").onSnapshot(updates => {
       if (updates) {
         updates.forEach(update => {
           const data = update.data();
-          for (let i = 0; i < this.invites.length; i++) {
-            if (this.invites[i].id == update.id) return;
+          const idx = this.invites.findIndex(el => el.id === update.id);
+          if (idx === -1) {
+            this.invites.push({
+              ...data,
+              id: update.id
+            });
+          } else {
+            for (let k in Object.keys(data)) {
+              if (this.invites[idx][k] === data[k]) continue;
+              this.invites[idx][k] === data[k];
+            }
           }
-          this.invites.push({
-            ...data,
-            id: data.id
-          });
         });
+        this.loading = false;
       }
+      this.deriveFilteredInvites();
     });
   },
   methods: {
-    updateInviteList: async function() {
-      const invites = await this.db.collection("invites").get();
-      invites.forEach(i => {
-        const data = i.data();
-        this.invites.push({
-          ...data,
-          id: i.id
-        });
-      });
-      this.loading = false;
-    },
     toggleShow: function() {
       const show = !this.show;
       this.show = show;
       window.localStorage.showInviteForm = show;
     },
-    updateFilter: function(f) {
-      this.filter = f;
-      this.$forceUpdate();
-    }
-  },
-  computed: {
-    filteredInvites: function() {
+    deriveFilteredInvites: function() {
       const search = this.search.toLowerCase();
+      const initial = this.invites.filter(i => {
+        if (this.filter === "all") return true;
+        if (this.filter === "pending") return i.invited && !i.accepted;
+        if (this.filter === "waiting") return i.accepted && !i.granted;
+      });
       if (search.length === 0) {
-        return this.invites.sort(
+        this.filteredInvites = initial.sort(
           (a, b) => new Date(b.invited) - new Date(a.invited)
         );
+        return;
       }
-      return this.invites
-        .filter(i => {
-          if (this.filter === "all") return true;
-          if (this.filter === "pending") return i.invited && !i.accepted;
-          if (this.filter === "waiting") return i.accepted && !i.granted;
-        })
+      this.filteredInvites = initial
         .filter(i => {
           return (
             i.email.indexOf(search) >= 0 ||
@@ -120,6 +111,12 @@ export default {
             levenshteinDistance(a, search) > levenshteinDistance(b, search)
         );
     },
+    updateFilter: function(f) {
+      this.filter = f;
+      this.deriveFilteredInvites();
+    }
+  },
+  computed: {
     ...mapState({
       db: state => state.db
     })

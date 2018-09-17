@@ -4,6 +4,7 @@ import Login from "./views/Login.vue";
 import Dashboard from "./views/Dashboard.vue";
 import FilecoinAccess from "./views/FilecoinAccess.vue";
 import ManageFilecoinInvites from "./views/ManageFilecoinInvites.vue";
+import RegistrationConfirmation from "./views/RegistrationConfirmation.vue";
 
 import store from "./store";
 
@@ -41,6 +42,11 @@ export default new Router({
       path: "/manage-invites",
       name: "ManageFilecoinInvites",
       component: ManageFilecoinInvites
+    },
+    {
+      path: "/registration-confirmation",
+      name: "RegistrationConfirmation",
+      component: RegistrationConfirmation
     }
     // {
     //   path: '/about',

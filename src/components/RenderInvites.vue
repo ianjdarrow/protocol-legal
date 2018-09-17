@@ -23,7 +23,9 @@
         <span class="name" :class="invite.name ? '' : 'muted'">{{ invite.name || "-" }}</span>
         <span class="invited" :class="invite.invited ? '' : 'muted'">{{ formatted(invite.invited) || "-" }}</span>
         <span class="accepted" :class="invite.accepted ? '' : 'muted'">{{ formatted(invite.accepted) || "-" }}</span>
-        <span class="granted" :class="invite.granted ? '' : 'muted'">{{ invite.granted || "-" }}</span>
+        <span class="granted">
+          <GrantAccessWidget :invite="invite" />
+        </span>
         <span class="options"></span>
       </div>
     </div>
@@ -33,9 +35,10 @@
 <script>
 import format from "date-fns/format";
 import Loader from "../components/Loader";
+import GrantAccessWidget from "../components/GrantAccessWidget";
 export default {
   name: "RenderInvites",
-  components: { Loader },
+  components: { Loader, GrantAccessWidget },
   props: ["invites", "loading"],
   methods: {
     formatted: function(date) {
@@ -77,8 +80,10 @@ export default {
 }
 .invite-header {
   font-weight: bold;
+  padding-bottom: 0.5rem;
 }
 .invite-list {
+  box-sizing: border-box;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   border: 1px solid transparent;

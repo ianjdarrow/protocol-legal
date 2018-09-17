@@ -10,6 +10,7 @@
     </div>
     <div class="tos">
       <h1>Welcome to the Filecoin private preview! <img class="emoji" src="../assets/party.png" /></h1>
+      <hr />
       <p>Thanks for joining us as we work towards the public testnet and launch. We asked you to join because we value your deep expertise and thoughtful approach across a number of problem areas. Above all, we are grateful for your help, critique, PRs, ideas, and questions.</p>
       <p>Once you confirm your participation:</p>
       <ul>
@@ -31,6 +32,7 @@
         <li>I agree not to blog, write, tweet, or othferwise publicly discuss the project or my participation until the public testnet launches.</li>
         <li>I understand that I’m being granted access only for testing, collaboration, and feedback, and that there are no uptime or reliability guarantees.</li>
       </ul>
+      <hr class="mt-1 mb-1" />
       <form @submit.prevent="handleSubmit" v-if="invitee.email && !invitee.accepted">
         <div class="input mb-1 mt-1">
           <label>Your GitHub username</label>
@@ -39,7 +41,7 @@
         </div>
         <button type="button" class="sm fullwidth mb-1 agree-button" :class="tosAgreed ? 'active' : ''" @click="tosAgreed = !tosAgreed">I agree to the private preview rules</button>
         <button type="submit" class="fullwidth" :disabled="!formValid">
-          Confirm participation
+          Request access
         </button>
       </form>
     </div>
@@ -99,9 +101,10 @@ export default {
         .collection("invites")
         .doc(this.$route.params.token)
         .update({
-          accepted: new Date().toISOString()
+          accepted: new Date().toISOString(),
+          acceptanceMetadata: geoData
         });
-      console.log(result);
+      this.$router.push("/registration-confirmation");
     }
   },
   computed: {
@@ -109,7 +112,6 @@ export default {
       return this.form.github.length > 1 && this.tosAgreed;
     },
     ...mapState({
-      // firebase: state => state.firebase,
       db: state => state.db
     })
   }
@@ -147,7 +149,7 @@ export default {
     font-weight: 500;
     line-height: 1;
     margin: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
   }
   .emoji {
     height: 1em;
