@@ -13,11 +13,12 @@ Vue.use(Router);
 
 const checkLogin = (to, from, next) => {
   const re = /^\w*@protocol\.ai$/;
+  console.log(to);
   const email = store.state.email;
   if (re.test(email)) {
     next();
   } else {
-    next("/login");
+    next(`/login${to.path ? `?redirect=${to.path}` : ""}`);
   }
 };
 

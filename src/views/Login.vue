@@ -17,7 +17,10 @@ export default {
       const user = this.firebase.auth().currentUser;
       const re = /^.*@protocol.ai$/;
       if (user && re.test(user.email)) {
-        return this.$router.push("/dashboard");
+        const route = this.$route.query.redirect
+          ? this.$route.query.redirect
+          : "/dashboard";
+        return this.$router.push(route);
       }
       try {
         const result = await this.firebase
