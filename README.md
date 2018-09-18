@@ -1,5 +1,7 @@
 # protocol_legal
 
+[protocol-legal.com](https://protocol-legal.com)
+
 The software layer for Protocol Labs internal legal tooling. Initially handling invites for the Filecoin early access program.
 
 Security rules are currently handled on the Firestore side & not reflected here.
