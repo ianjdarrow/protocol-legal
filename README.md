@@ -14,6 +14,7 @@ Deployment is a shell script to a DO droplet. Extremely improvable.
 - Add user details that show more data (who invited, ToS acceptance metadata, revocation, notes)
 - Improve filtering, searching and sorting past invites
 - Paginate results (client side only is fine initially)
+- Make mobile friendly
 
 ## Useful: how to preview FC invites
 

@@ -141,12 +141,18 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: 600px) {
+    display: inline;
+  }
 }
 .filters {
   display: flex;
   flex-basis: 75%;
   justify-content: flex-end;
   align-items: center;
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 }
 .pills {
   display: flex;
@@ -154,9 +160,11 @@ export default {
 }
 .search {
   flex-basis: 33%;
-  input {
-    // position: relative;
-    // transform: translateY(-0.6rem);
+  @media (max-width: 600px) {
+    width: 400px !important;
+    input {
+      width: 100%;
+    }
   }
 }
 </style>

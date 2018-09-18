@@ -80,6 +80,21 @@ export default {
   .options {
     flex-basis: 0%;
   }
+  @media (max-width: 600px) {
+    .email {
+      flex-basis: 60%;
+    }
+    .github {
+      flex-basis: 40%;
+    }
+    .name,
+    .invited,
+    .accepted,
+    .granted,
+    .options {
+      display: none;
+    }
+  }
 }
 .invite-header {
   font-weight: bold;
