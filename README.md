@@ -10,7 +10,7 @@ Deployment is a shell script to a DO droplet. Extremely improvable.
 
 - TESTS!
 - Add user details that show more data (who invited, ToS acceptance metadata, revocation, notes)
-- Improve filtering and querying
+- Improve filtering, searching and sorting past invites
 - Paginate results (client side only is fine initially)
 
 ## Project setup

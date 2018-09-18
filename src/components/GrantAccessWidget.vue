@@ -1,4 +1,5 @@
 <template>
+  <!-- Granted access state turns out to be a little complicated. This widget pulls it out of RenderInvites -->
   <div>
     <button v-if="showInvite" class="sm" @click="indicateAccessGranted">I did it</button>
     <span v-if="showDate">{{ formatted(invite.granted) }}</span>

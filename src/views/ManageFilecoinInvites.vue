@@ -1,4 +1,5 @@
 <template>
+  <!-- State container and some layout for the main invite list view -->
   <div>
     <Nav />
     <div class="container">
@@ -57,6 +58,11 @@ export default {
     };
   },
   async mounted() {
+    // handles real-time updates, poorly. other connected clients will get new
+    // documents, but not updates to existing documents.
+    // this is a really gross way to do this. we should probably move it to a
+    // separate vuex module and handle it at the application level. and also
+    // take time to better understand firestore's update model.
     this.$store.state.db.collection("invites").onSnapshot(updates => {
       if (updates) {
         updates.forEach(update => {
@@ -85,6 +91,12 @@ export default {
       this.show = show;
       window.localStorage.showInviteForm = show;
     },
+
+    // this is a horrible hack. i had surprising issues getting Vue to
+    // re-render a computed property when the filter function changed.
+    // so, we update state directly, which is a really gross and
+    // non-FP approach. would love to fix.
+
     deriveFilteredInvites: function() {
       const search = this.search.toLowerCase();
       const initial = this.invites.filter(i => {

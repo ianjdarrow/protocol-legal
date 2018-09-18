@@ -1,4 +1,5 @@
 <template>
+  <!-- The page displayed to users who receive a filecoin invite -->
   <div class="invite-container" :key="$route.params.token">
     <div class="logos">
       <a href="https://filecoin.io">

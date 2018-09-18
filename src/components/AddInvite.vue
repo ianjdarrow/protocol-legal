@@ -1,4 +1,5 @@
 <template>
+  <!-- Child for ManageInvites view – allows adding new users -->
   <div class="invite-form">
     <transition name="invite-form">
       <div class="add-invite mb-1" v-if="show">

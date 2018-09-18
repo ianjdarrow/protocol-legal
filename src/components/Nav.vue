@@ -1,4 +1,5 @@
 <template>
+  <!-- top nav for logged in pages -->
   <div class="container">
     <div class="nav">
       <img class="logo" src="../assets/pl.svg" @click="$router.push('/dashboard')" />

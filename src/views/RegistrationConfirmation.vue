@@ -1,4 +1,5 @@
 <template>
+  <!-- The page displayed after a user accepts the terms of service -->
   <div class="flex">
     <a href="https://protocol.ai">
       <img src="../assets/pl.svg">

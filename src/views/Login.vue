@@ -1,4 +1,5 @@
 <template>
+  <!-- The login page for PL users -->
   <div class="container login">
     <img class="logo" src="../assets/pl.svg" />
     <div>

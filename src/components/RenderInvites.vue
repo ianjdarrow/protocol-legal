@@ -1,4 +1,7 @@
 <template>
+  <!-- the container that renders a list of invites
+this is a pure functional component – all the actual rendering happens
+in the ManageFilecoinInvites view -->
   <div>
     <div class="invite-header">
       <span class="email">Email</span>

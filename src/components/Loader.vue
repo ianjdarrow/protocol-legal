@@ -1,4 +1,5 @@
 <template>
+  <!-- a perfectly fun set of loading dots -->
   <span class="loader">
     <span>.</span>
     <span>.</span>

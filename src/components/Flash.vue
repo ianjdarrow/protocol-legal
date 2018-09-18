@@ -1,4 +1,6 @@
 <template>
+  <!-- A normal flash, used to display messages -->
+  <!-- See `store.js` for usage -->
   <transition name="flash">
     <div class="flash" v-if="flash.active">
       <p>{{ flash.message }}</p>
