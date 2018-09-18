@@ -36,6 +36,7 @@ export default new Router({
     },
     {
       path: "/login",
+      alias: "/",
       name: "Login",
       component: Login
     },
