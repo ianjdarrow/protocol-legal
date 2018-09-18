@@ -5,6 +5,7 @@ import Dashboard from "./views/Dashboard.vue";
 import FilecoinAccess from "./views/FilecoinAccess.vue";
 import ManageFilecoinInvites from "./views/ManageFilecoinInvites.vue";
 import RegistrationConfirmation from "./views/RegistrationConfirmation.vue";
+import InviteDetail from "./views/InviteDetail.vue";
 
 import store from "./store";
 
@@ -21,7 +22,18 @@ const checkLogin = (to, from, next) => {
 };
 
 export default new Router({
+  mode: "history",
   routes: [
+    {
+      path: "/filecoin-invite/:token",
+      name: "FilecoinAccess",
+      component: FilecoinAccess
+    },
+    {
+      path: "/registration-confirmation",
+      name: "RegistrationConfirmation",
+      component: RegistrationConfirmation
+    },
     {
       path: "/login",
       name: "Login",
@@ -34,19 +46,16 @@ export default new Router({
       beforeEnter: checkLogin
     },
     {
-      path: "/filecoin-invite/:token",
-      name: "FilecoinAccess",
-      component: FilecoinAccess
-    },
-    {
       path: "/manage-invites",
       name: "ManageFilecoinInvites",
-      component: ManageFilecoinInvites
+      component: ManageFilecoinInvites,
+      beforeEnter: checkLogin
     },
     {
-      path: "/registration-confirmation",
-      name: "RegistrationConfirmation",
-      component: RegistrationConfirmation
+      path: "/manage-invites/:id",
+      name: "InviteDetail",
+      component: InviteDetail,
+      beforeEnter: checkLogin
     }
     // {
     //   path: '/about',

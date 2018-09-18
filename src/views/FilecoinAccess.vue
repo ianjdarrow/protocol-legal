@@ -23,15 +23,16 @@
           <a href="mailto:filecoin@protocol.ai">filecoin@protocol.ai</a> at any time.</li>
       </ul>
       <h3>Private preview rules</h3>
-      <p>Please review the rules for the private preview. If you have any questions, email
-        <a href="mailto:legalrequests@protocol.ai">legalrequests@protocol.ai</a>, or feel free to reach out to another Protocol Labs contact.</p>
+      <p>Please review the rules for the private preview.</p>
       <ul>
         <li>I agree not to share any code or information I receive as part of the private preview.</li>
-        <li>I agree not to upload or share illegal content on the Filecoin network, and to remove it if I'm able.</li>
+        <li>I agree not to use the Filecoin network to upload or share content that's illegal or violates the IP rights of others. I'll remove any such content if I'm able to do so.</li>
         <li>I agree not to host a generally-accessible file upload service until the private preview ends (when the public testnet launches).</li>
-        <li>I agree not to blog, write, tweet, or othferwise publicly discuss the project or my participation until the public testnet launches.</li>
+        <li>I agree not to blog, write, tweet, or otherwise publicly discuss the project or my participation until the public testnet launches.</li>
         <li>I understand that I’m being granted access only for testing, collaboration, and feedback, and that there are no uptime or reliability guarantees.</li>
       </ul>
+      <p>Your access may be revoked if you violate these rules. If you have any questions, email
+        <a href="mailto:legalrequests@protocol.ai">legalrequests@protocol.ai</a>, or feel free to reach out to another Protocol Labs contact.</p>
       <hr class="mt-1 mb-1" />
       <form @submit.prevent="handleSubmit" v-if="invitee.email && !invitee.accepted">
         <div class="input mb-1 mt-1">
