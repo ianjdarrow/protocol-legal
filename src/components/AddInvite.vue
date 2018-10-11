@@ -47,13 +47,12 @@ export default {
     handleSubmit: async function() {
       const email = this.form.email.toLowerCase();
       const github = this.form.github.toLowerCase();
-      const alreadyAdded =
-        this.invites.filter(
-          i => i.email === email || (i.github && i.github === github)
-        ).length > 0;
-      if (alreadyAdded) {
+      const alreadyAdded = this.invites.filter(
+        i => i.email === email || (i.github && i.github === github)
+      );
+      if (alreadyAdded.length > 0) {
         this.$store.commit("setFlash", "Already invited!");
-        // todo: point to entry
+        this.$emit("setSearch", alreadyAdded[0].email);
         return;
       }
       const payload = {

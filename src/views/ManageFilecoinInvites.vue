@@ -16,10 +16,11 @@
           <div class="input search">
             <label>Search</label>
             <input v-model="search" @input="deriveFilteredInvites">
+            <span class="clear-search" :hidden="search.length === 0" @click="search=''">&times;</span>
           </div>
         </div>
       </div>
-      <AddInvite :show="show" :invites="invites" />
+      <AddInvite :show="show" :invites="invites" v-on:setSearch="setSearch" />
       <RenderInvites :invites="filteredInvites" :loading="loading" />
     </div>
   </div>
@@ -91,11 +92,15 @@ export default {
       this.show = show;
       window.localStorage.showInviteForm = show;
     },
+    setSearch: function(search) {
+      this.search = search;
+    },
 
     // this is a horrible hack. i had surprising issues getting Vue to
     // re-render a computed property when the filter function changed.
-    // so, we update state directly, which is a really gross and
-    // non-FP approach. would love to fix.
+    // so, we update what's basically duplicated and derived
+    // state directly, which is a really gross and non-FP approach.
+    // would love to fix.
 
     deriveFilteredInvites: function() {
       const search = this.search.toLowerCase();
@@ -132,6 +137,11 @@ export default {
     ...mapState({
       db: state => state.db
     })
+  },
+  watch: {
+    search: function() {
+      this.deriveFilteredInvites();
+    }
   }
 };
 </script>
@@ -164,6 +174,18 @@ export default {
     width: 400px !important;
     input {
       width: 100%;
+    }
+  }
+  .clear-search {
+    position: absolute;
+    font-size: 1.5em;
+    // padding: 0.5em;
+    right: 0.25em;
+    top: -0.25em;
+    color: rgba(black, 0.2);
+    &:hover {
+      color: #222;
+      cursor: pointer;
     }
   }
 }

@@ -13,7 +13,6 @@ Vue.use(Router);
 
 const checkLogin = (to, from, next) => {
   const re = /^\w*@protocol\.ai$/;
-  console.log(to);
   const email = store.state.email;
   if (re.test(email)) {
     next();
