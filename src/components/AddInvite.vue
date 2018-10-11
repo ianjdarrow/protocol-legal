@@ -58,7 +58,7 @@ export default {
       const payload = {
         ...this.form,
         email: this.form.email.toLowerCase(),
-        invitedBy: this.email,
+        invitedBy: this.user,
         invited: new Date().toISOString()
       };
       this.loading = true;
@@ -93,7 +93,7 @@ export default {
     },
     ...mapState({
       db: state => state.db,
-      email: state => state.email
+      user: state => state.user
     })
   }
 };

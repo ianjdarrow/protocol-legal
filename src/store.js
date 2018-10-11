@@ -22,7 +22,7 @@ export default new Vuex.Store({
     db: null,
     provider: null,
     loading: true,
-    email: "",
+    user: {},
     flash: {
       active: false,
       message: ""
@@ -44,8 +44,8 @@ export default new Vuex.Store({
     setLoadingFalse(state) {
       state.loading = false;
     },
-    setEmail(state, email) {
-      state.email = email;
+    setUser(state, user) {
+      state.user = user;
     },
     setFlash(state, message) {
       state.flash = {
@@ -60,7 +60,7 @@ export default new Vuex.Store({
       };
     },
     logout(state) {
-      state.email = "";
+      state.user = {};
     }
   },
   actions: {
@@ -71,7 +71,11 @@ export default new Vuex.Store({
       // set up auth provider
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().onAuthStateChanged(user => {
-        if (user && user.email) context.commit("setEmail", user.email);
+        if (user && user.email)
+          context.commit("setUser", {
+            email: user.email,
+            name: user.displayName
+          });
         else context.commit("logout");
       });
       context.commit("setProvider", provider);

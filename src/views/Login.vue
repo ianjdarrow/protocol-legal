@@ -27,8 +27,9 @@ export default {
           .auth()
           .signInWithPopup(this.provider);
         const email = result.user.email;
+        const name = result.user.displayName;
         if (!re.test(email)) throw new Error("Must be a protocol.ai email");
-        this.$store.commit("setEmail", email);
+        this.$store.commit("setUser", { email, name });
         this.$router.push("/dashboard");
       } catch (err) {
         console.error(err);

@@ -15,7 +15,7 @@ in the ManageFilecoinInvites view -->
     <div class="no-results" v-if="!loading && invites.length === 0">No results</div>
     <Loader v-if="loading" />
     <div v-else>
-      <div v-for="invite in invites" class="invite-list" :key="invite.id">
+      <div v-for="invite in paginatedInvites" class="invite-list" :key="invite.id">
         <span class="email">{{ invite.email }}</span>
         <span class="github">
           <a :href="`https://github.com/${invite.github}`" v-if="invite.github">
@@ -31,6 +31,7 @@ in the ManageFilecoinInvites view -->
         </span>
         <span class="options"></span>
       </div>
+      <div class="pagination" v-if="invites.length > pageLength"><input type="number" min="1" v-model="currentPage" class="page-input"> / {{ Math.ceil(invites.length / pageLength) }}</div>
     </div>
   </div>
 </template>
@@ -39,15 +40,37 @@ in the ManageFilecoinInvites view -->
 import format from "date-fns/format";
 import Loader from "../components/Loader";
 import GrantAccessWidget from "../components/GrantAccessWidget";
+
 export default {
   name: "RenderInvites",
   components: { Loader, GrantAccessWidget },
   props: ["invites", "loading"],
+  data() {
+    return {
+      pageLength: 8,
+      currentPage: 1
+    };
+  },
   methods: {
     formatted: function(date) {
       const formatted = format(date, "YYYY.MM.DD");
       if (formatted == "Invalid Date") return "-";
       return formatted;
+    }
+  },
+  computed: {
+    paginatedInvites: function() {
+      const current = this.currentPage || 1;
+      const startPosition = this.pageLength * (current - 1);
+      return this.invites.slice(startPosition, startPosition + this.pageLength);
+    }
+  },
+  watch: {
+    currentPage: function() {
+      if (this.currentPage < 0) return (this.currentPage = 1);
+      const max = this.invites.length / this.pageLength;
+      if (this.currentPage > max) return (this.currentPage = max);
+      return (this.currentPage = Math.floor(this.currentPage));
     }
   }
 };
@@ -120,5 +143,12 @@ export default {
   padding-top: 1rem;
   color: rgba(black, 0.4);
   font-style: italic;
+}
+.pagination {
+  font-family: monospace;
+}
+.page-input {
+  width: 3em;
+  text-align: center;
 }
 </style>
