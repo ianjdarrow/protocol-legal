@@ -12,8 +12,8 @@ const config = {
   authDomain: "protocol-legal-1535392151520.firebaseapp.com",
   databaseURL: "https://protocol-legal-1535392151520.firebaseio.com",
   projectId: "protocol-legal-1535392151520",
-  storageBucket: "protocol-legal-1535392151520.appspot.com",
-  messagingSenderId: "891039701560"
+  storageBucket: "protocol-legal-1535392151520.appspot.com"
+  // messagingSenderId: "891039701560"
 };
 
 export default new Vuex.Store({

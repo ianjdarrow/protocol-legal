@@ -51,6 +51,7 @@ export default {
 @import "../styles/_colors";
 .invite-row {
   position: relative;
+  height: 8rem;
   flex-basis: 49.7%;
   border-radius: 2px;
   padding: 1rem;

@@ -21,7 +21,7 @@
             <input type="text" class="helper" v-model="form.github">
             <span class="helper">@</span>
           </div>
-          <button type="submit" class="fullwidth sm" :disabled="!formValid">Send invite!</button>
+          <button type="submit" class="fullwidth" :disabled="!formValid">Send invite!</button>
         </form>
       </div>
     </transition>
@@ -111,12 +111,10 @@ export default {
 
 <style lang="scss" scoped>
 .invite-form {
-  border-bottom: 1px solid rgba(black, 0.1);
-  margin-bottom: 1rem;
 }
 .add-invite {
   transition: all 0.2s ease-in-out;
-  max-height: 18rem;
+  max-height: 19.1rem;
   overflow: hidden;
 }
 .invite-form-enter,

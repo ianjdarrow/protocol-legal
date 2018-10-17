@@ -3,16 +3,17 @@
   <div>
     <Nav />
     <div class="container">
+      <button class="sm fullwidth mb-1" @click="toggleShow">
+        {{ show ? 'Hide form' : 'Add new user' }}
+      </button>
+      <AddInvite :show="show" :invites="invites" v-on:setSearch="setSearch" />
       <div class="utility-row pb-1">
-        <button @click="toggleShow">
-          {{ show ? 'Hide form' : 'Invite user' }}
-        </button>
         <div class="filters">
-          <div class="pills mr-1">
+          <div class="pills">
             <button class="sm pill" :class="filter === 'all' ? 'active' : ''" @click="updateFilter('all')">All</button>
             <button class="sm pill" :class="filter === 'pending' ? 'active' : ''" @click="updateFilter('pending')">Pending</button>
-            <button class="sm pill" :class="filter === 'waiting' ? 'active' : ''" @click="updateFilter('waiting')">Waiting</button>
-            <button class="sm pill" :class="filter === 'onboard' ? 'active' : ''" @click="updateFilter('onboard')">Onboard</button>
+            <button class="sm pill" :class="filter === 'waiting' ? 'active' : ''" @click="updateFilter('waiting')">Needs access</button>
+            <button class="sm pill" :class="filter === 'onboard' ? 'active' : ''" @click="updateFilter('onboard')">Onboarded</button>
           </div>
         </div>
         <div class="input search">
@@ -21,7 +22,6 @@
           <span class="clear-search" :hidden="search.length === 0" @click="search=''">&times;</span>
         </div>
       </div>
-      <AddInvite :show="show" :invites="invites" v-on:setSearch="setSearch" />
       <RenderInvites :invites="filteredInvites" :loading="loading" />
     </div>
   </div>
@@ -156,16 +156,24 @@ export default {
 }
 .filters {
   display: flex;
-  flex-basis: 50%;
-  justify-content: flex-end;
+  flex-basis: 49.7%;
+  justify-content: center;
   align-items: center;
+  padding: 1rem;
+  padding-top: 1.25rem;
+  max-height: 3rem;
+  border: 1px solid rgba(black, 0.1);
+  border-radius: 2px;
+  @media (max-width: 600px) {
+    border: none;
+  }
 }
 .pills {
   display: flex;
   justify-content: center;
 }
 .search {
-  flex-basis: 33%;
+  flex-basis: 49.7%;
   @media (max-width: 600px) {
     flex-basis: 100%;
     input {

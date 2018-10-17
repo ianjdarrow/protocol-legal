@@ -16,7 +16,7 @@ button {
     color: white;
   }
   &.sm {
-    padding: 0.15rem 1rem 0.15rem 1rem;
+    padding: 0.15rem 1rem 0.1rem 1rem;
     font-size: 80%;
     &:hover {
       transform: none;
@@ -25,19 +25,19 @@ button {
     }
   }
   &.pill {
+    border: none;
+    padding: 0 0.2rem 0 0.2rem;
+    margin-right: 1rem;
+    border-bottom: 2px solid transparent;
     border-radius: 0;
-    border-right: none;
-    &:first-child {
-      border-top-left-radius: 2rem;
-      border-bottom-left-radius: 2rem;
-    }
-    &:last-child {
-      border-top-right-radius: 2rem;
-      border-bottom-right-radius: 2rem;
-      border-right: 2px solid $black;
-    }
+    opacity: 0.33;
     &.active {
-      background: rgba($black, 0.15);
+      opacity: 1;
+      border-bottom: 2px solid $black;
+      // background: rgba($black, 0.05);
+    }
+    &:focus {
+      outline: none;
     }
   }
   &:disabled {

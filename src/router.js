@@ -1,9 +1,10 @@
 import Vue from "vue";
 import Router from "vue-router";
+import NProgress from "nprogress";
+
 import Login from "./views/Login.vue";
 import Dashboard from "./views/Dashboard.vue";
 import FilecoinAccess from "./views/FilecoinAccess.vue";
-import ManageFilecoinInvites from "./views/ManageFilecoinInvites.vue";
 import RegistrationConfirmation from "./views/RegistrationConfirmation.vue";
 import InviteDetail from "./views/InviteDetail.vue";
 
@@ -21,7 +22,7 @@ const checkLogin = (to, from, next) => {
   }
 };
 
-export default new Router({
+const router = new Router({
   mode: "history",
   routes: [
     {
@@ -49,7 +50,8 @@ export default new Router({
     {
       path: "/manage-invites",
       name: "ManageFilecoinInvites",
-      component: ManageFilecoinInvites,
+      component: () =>
+        import(/* webpackChunkName: "managefilecoininvites" */ "./views/ManageFilecoinInvites.vue"),
       beforeEnter: checkLogin
     },
     {
@@ -68,3 +70,14 @@ export default new Router({
     // }
   ]
 });
+
+router.beforeResolve((to, from, next) => {
+  if (to.name) NProgress.start();
+  next();
+});
+
+router.afterEach((to, from) => {
+  NProgress.done();
+});
+
+export default router;

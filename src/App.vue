@@ -1,7 +1,7 @@
 <template>
   <div id="app" v-if="$store.state.loading === false">
     <Flash />
-    <router-view/>
+    <router-view />
   </div>
   <div v-else>Loading...</div>
 </template>
@@ -28,5 +28,6 @@ export default {
 
 
 <style lang="scss">
+@import "../node_modules/nprogress/nprogress.css";
 @import "./styles/main.scss";
 </style>
