@@ -3,34 +3,25 @@
 this is a pure functional component – all the actual rendering happens
 in the ManageFilecoinInvites view -->
   <div>
-    <div class="invite-header">
-      <span class="email">Email</span>
-      <span class="github">Github</span>
-      <span class="name">Name</span>
-      <span class="invited">Invited</span>
-      <span class="accepted">Accepted</span>
-      <span class="granted">Granted</span>
-      <span class="options"></span>
-    </div>
     <div class="no-results" v-if="!loading && invites.length === 0">No results</div>
     <Loader v-if="loading" />
-    <div v-else>
-      <div v-for="invite in paginatedInvites" class="invite-list" :key="invite.id">
-        <span class="email">{{ invite.email }}</span>
+    <div class="invites" v-else>
+      <InviteRow v-for="invite in paginatedInvites" :invite="invite" :key="invite.id" />
+      <!-- <div v-for="invite in paginatedInvites" class="invite-list" :key="invite.id">
+        <span class="name"><a :href="`mailto:${invite.email}`">{{ invite.name }}</a></span>
         <span class="github">
           <a :href="`https://github.com/${invite.github}`" v-if="invite.github">
             {{ `@${invite.github}` }}
           </a>
           <span class="muted" v-else>-</span>
         </span>
-        <span class="name" :class="invite.name ? '' : 'muted'">{{ invite.name || "-" }}</span>
         <span class="invited" :class="invite.invited ? '' : 'muted'">{{ formatted(invite.invited) || "-" }}</span>
         <span class="accepted" :class="invite.accepted ? '' : 'muted'">{{ formatted(invite.accepted) || "-" }}</span>
         <span class="granted">
           <GrantAccessWidget :invite="invite" />
         </span>
         <span class="options"></span>
-      </div>
+      </div> -->
       <div class="pagination" v-if="invites.length > pageLength"><input type="number" min="1" v-model="currentPage" class="page-input"> / {{ Math.ceil(invites.length / pageLength) }}</div>
     </div>
   </div>
@@ -40,10 +31,11 @@ in the ManageFilecoinInvites view -->
 import format from "date-fns/format";
 import Loader from "../components/Loader";
 import GrantAccessWidget from "../components/GrantAccessWidget";
+import InviteRow from "../components/InviteRow";
 
 export default {
   name: "RenderInvites",
-  components: { Loader, GrantAccessWidget },
+  components: { Loader, GrantAccessWidget, InviteRow },
   props: ["invites", "loading"],
   data() {
     return {
@@ -77,14 +69,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.invites {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  @media (max-width: 800px) {
+    display: block;
+  }
+}
 .invite-header,
 .invite-list {
   display: flex;
   padding-left: 5px;
   padding-right: 5px;
-  .email {
-    flex-basis: 23%;
-  }
   .github {
     flex-basis: 18%;
   }
@@ -118,10 +115,6 @@ export default {
       display: none;
     }
   }
-}
-.invite-header {
-  font-weight: bold;
-  padding-bottom: 0.5rem;
 }
 .invite-list {
   box-sizing: border-box;

@@ -5,12 +5,12 @@
       <div class="add-invite mb-1" v-if="show">
         <form @submit.prevent="handleSubmit">
           <div class="input mb-1">
-            <label>Email</label>
-            <input type="email" v-model="form.email" ref="email">
+            <label>Name</label>
+            <input type="text" v-model="form.name" ref="name">
           </div>
           <div class="input mb-1">
-            <label>Name</label>
-            <input type="text" v-model="form.name">
+            <label>Email</label>
+            <input type="email" v-model="form.email">
           </div>
           <div class="input mb-1">
             <label>Organization (optional)</label>
@@ -74,7 +74,7 @@ export default {
         this.$store.commit("setFlash", `Invited ${this.form.email}!`);
         setTimeout(() => this.$store.commit("clearFlash"), 2500);
         this.clearForm();
-        this.$refs.email.focus();
+        this.$refs.name.focus();
       } catch (err) {
         console.error(err);
         this.$store.commit(
@@ -103,7 +103,7 @@ export default {
   },
   watch: {
     show: function() {
-      if (this.show) return setTimeout(() => this.$refs.email.focus(), 150);
+      if (this.show) return setTimeout(() => this.$refs.name.focus(), 150);
     }
   }
 };

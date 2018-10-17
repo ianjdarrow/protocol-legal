@@ -12,6 +12,7 @@
             <button class="sm pill" :class="filter === 'all' ? 'active' : ''" @click="updateFilter('all')">All</button>
             <button class="sm pill" :class="filter === 'pending' ? 'active' : ''" @click="updateFilter('pending')">Pending</button>
             <button class="sm pill" :class="filter === 'waiting' ? 'active' : ''" @click="updateFilter('waiting')">Waiting</button>
+            <button class="sm pill" :class="filter === 'onboard' ? 'active' : ''" @click="updateFilter('onboard')">Onboard</button>
           </div>
         </div>
         <div class="input search">
@@ -60,7 +61,6 @@ export default {
   },
   async mounted() {
     // handles real-time updates
-
     this.$store.state.db.collection("invites").onSnapshot(updates => {
       updates.docChanges().forEach(change => {
         const data = { ...change.doc.data(), id: change.doc.id };
@@ -103,6 +103,7 @@ export default {
         if (this.filter === "all") return true;
         if (this.filter === "pending") return i.invited && !i.accepted;
         if (this.filter === "waiting") return i.accepted && !i.granted;
+        if (this.filter === "onboard") return i.granted;
       });
       if (search.length === 0) {
         this.filteredInvites = initial.sort(
@@ -113,9 +114,11 @@ export default {
       this.filteredInvites = initial
         .filter(i => {
           return (
-            i.email.indexOf(search) >= 0 ||
-            i.github.indexOf(search) >= 0 ||
-            i.name.indexOf(search) >= 0
+            i.email.toLowerCase().indexOf(search) >= 0 ||
+            i.name.toLowerCase().indexOf(search) >= 0 ||
+            (i.github && i.github.toLowerCase().indexOf(search) >= 0) ||
+            (i.organization &&
+              i.organization.toLowerCase().indexOf(search) >= 0)
           );
         })
         .sort(
@@ -144,6 +147,7 @@ export default {
 <style lang="scss" scoped>
 .utility-row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   @media (max-width: 600px) {
@@ -152,12 +156,9 @@ export default {
 }
 .filters {
   display: flex;
-  flex-basis: 33%;
+  flex-basis: 50%;
   justify-content: flex-end;
   align-items: center;
-  @media (max-width: 600px) {
-    width: 100%;
-  }
 }
 .pills {
   display: flex;
@@ -166,7 +167,7 @@ export default {
 .search {
   flex-basis: 33%;
   @media (max-width: 600px) {
-    width: 400px !important;
+    flex-basis: 100%;
     input {
       width: 100%;
     }
