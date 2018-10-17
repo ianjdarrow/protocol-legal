@@ -1,8 +1,10 @@
 <template>
   <div class="invite-row">
     <div class="left">
-      <p>{{invite.name}}</p>
-      <p class="org">{{invite.organization}}</p>
+      <div>
+        <p>{{invite.name}}</p>
+        <p class="org">{{invite.organization}}</p>
+      </div>
       <div class="icons">
         <a v-if="invite.github" :href="`https://github.com/${invite.github}`">
           <img class="github" src="../assets/github.png" />
@@ -64,9 +66,15 @@ export default {
   }
   .left {
     flex-basis: 45%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .right {
     flex-basis: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .link {
     position: absolute;
@@ -112,11 +120,14 @@ export default {
   display: flex;
   align-items: center;
   line-height: 1.3;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   font-weight: 500;
   &.muted {
     opacity: 0.7;
     font-weight: normal;
+  }
+  &:nth-child(3) {
+    margin-bottom: 0;
   }
 }
 .check {
