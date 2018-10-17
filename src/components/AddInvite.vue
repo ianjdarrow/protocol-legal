@@ -13,6 +13,10 @@
             <input type="text" v-model="form.name">
           </div>
           <div class="input mb-1">
+            <label>Organization (optional)</label>
+            <input type="text" v-model="form.organization">
+          </div>
+          <div class="input mb-1">
             <label>GitHub username (optional)</label>
             <input type="text" class="helper" v-model="form.github">
             <span class="helper">@</span>
@@ -36,9 +40,10 @@ export default {
   data() {
     return {
       form: {
+        name: "",
         email: "",
-        github: "",
-        name: ""
+        organization: "",
+        github: ""
       },
       loading: false
     };
@@ -95,6 +100,11 @@ export default {
       db: state => state.db,
       user: state => state.user
     })
+  },
+  watch: {
+    show: function() {
+      if (this.show) return setTimeout(() => this.$refs.email.focus(), 150);
+    }
   }
 };
 </script>
@@ -106,7 +116,7 @@ export default {
 }
 .add-invite {
   transition: all 0.2s ease-in-out;
-  max-height: 14rem;
+  max-height: 18rem;
   overflow: hidden;
 }
 .invite-form-enter,

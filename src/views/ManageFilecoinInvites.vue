@@ -5,7 +5,7 @@
     <div class="container">
       <div class="utility-row pb-1">
         <button @click="toggleShow">
-          {{ show ? 'Hide form' : 'Invite new user' }}
+          {{ show ? 'Hide form' : 'Invite user' }}
         </button>
         <div class="filters">
           <div class="pills mr-1">
@@ -13,11 +13,11 @@
             <button class="sm pill" :class="filter === 'pending' ? 'active' : ''" @click="updateFilter('pending')">Pending</button>
             <button class="sm pill" :class="filter === 'waiting' ? 'active' : ''" @click="updateFilter('waiting')">Waiting</button>
           </div>
-          <div class="input search">
-            <label>Search</label>
-            <input v-model="search" @input="deriveFilteredInvites">
-            <span class="clear-search" :hidden="search.length === 0" @click="search=''">&times;</span>
-          </div>
+        </div>
+        <div class="input search">
+          <label>Search</label>
+          <input v-model="search" @input="deriveFilteredInvites">
+          <span class="clear-search" :hidden="search.length === 0" @click="search=''">&times;</span>
         </div>
       </div>
       <AddInvite :show="show" :invites="invites" v-on:setSearch="setSearch" />
@@ -59,31 +59,26 @@ export default {
     };
   },
   async mounted() {
-    // handles real-time updates, poorly. other connected clients will get new
-    // documents, but not updates to existing documents.
-    // this is a really gross way to do this. we should probably move it to a
-    // separate vuex module and handle it at the application level. and also
-    // take time to better understand firestore's update model.
+    // handles real-time updates
+
     this.$store.state.db.collection("invites").onSnapshot(updates => {
-      if (updates) {
-        updates.forEach(update => {
-          const data = update.data();
-          const idx = this.invites.findIndex(el => el.id === update.id);
-          if (idx === -1) {
-            this.invites.push({
-              ...data,
-              id: update.id
-            });
-          } else {
-            for (let k in Object.keys(data)) {
-              if (this.invites[idx][k] === data[k]) continue;
-              this.invites[idx][k] === data[k];
-            }
-          }
-        });
+      updates.docChanges().forEach(change => {
+        const data = { ...change.doc.data(), id: change.doc.id };
+        if (change.type === "added") {
+          this.invites.push(data);
+        }
+        // not a new item – so we will be manipulating an existing item
+        const itemIndex = this.invites.findIndex(item => item.id === data.id);
+
+        if (change.type === "modified") {
+          this.invites[itemIndex] = data;
+        }
+        if (change.type === "removed") {
+          this.invites.splice(itemIndex, 1);
+        }
+        this.deriveFilteredInvites();
         this.loading = false;
-      }
-      this.deriveFilteredInvites();
+      });
     });
   },
   methods: {
@@ -152,12 +147,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   @media (max-width: 600px) {
-    display: inline;
+    display: block;
   }
 }
 .filters {
   display: flex;
-  flex-basis: 75%;
+  flex-basis: 33%;
   justify-content: flex-end;
   align-items: center;
   @media (max-width: 600px) {
