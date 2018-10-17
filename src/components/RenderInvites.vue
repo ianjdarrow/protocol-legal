@@ -5,7 +5,7 @@ in the ManageFilecoinInvites view -->
   <div>
     <div class="no-results" v-if="!loading && invites.length === 0">No results</div>
     <Loader v-if="loading" />
-    <div class="invites" v-else>
+    <div v-else class="invites">
       <InviteRow v-for="invite in invites" :invite="invite" :key="invite.id" />
     </div>
   </div>

@@ -7,7 +7,7 @@
       </div>
       <div class="icons">
         <div class="icon-row">
-          <a v-if="invite.github" :href="`https://github.com/${invite.github}`">
+          <a v-if="invite.github" :href="`https://github.com/${invite.github}`" target="_blank">
             <img class="github" src="../assets/github.png" /> <span>@{{invite.github}}</span>
           </a>
           <img v-else src="../assets/github.png" class="github disabled" />
@@ -84,7 +84,7 @@ export default {
   .link {
     position: absolute;
     right: -0.5rem;
-    top: 0rem;
+    top: 0.5rem;
     padding: 1rem;
     cursor: pointer;
     color: rgba(black, 0.06);

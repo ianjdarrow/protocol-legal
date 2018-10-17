@@ -17,7 +17,7 @@
           </div>
         </div>
         <div class="input search">
-          <label>Search</label>
+          <label>Search (name, company...)</label>
           <input v-model="search" @input="deriveFilteredInvites">
           <span class="clear-search" :hidden="search.length === 0" @click="search=''">&times;</span>
         </div>
@@ -36,7 +36,6 @@ import RenderInvites from "../components/RenderInvites";
 const levenshteinDistance = (s, t) => {
   if (!s.length) return t.length;
   if (!t.length) return s.length;
-
   return (
     Math.min(
       levenshteinDistance(s.substr(1), t) + 1,
@@ -62,6 +61,9 @@ export default {
   async mounted() {
     // handles real-time updates
     this.$store.state.db.collection("invites").onSnapshot(updates => {
+      // firestore gives you a nice "added, modified, renewed" field that
+      // lets us cleanly work with our local cache
+      // the entire collection is "added" once at initial load
       updates.docChanges().forEach(change => {
         const data = { ...change.doc.data(), id: change.doc.id };
         if (change.type === "added") {
@@ -105,7 +107,7 @@ export default {
         if (this.filter === "waiting") return i.accepted && !i.granted;
         if (this.filter === "onboard") return i.granted;
       });
-      if (search.length === 0) {
+      if (search.length < 2) {
         this.filteredInvites = initial.sort(
           (a, b) => new Date(b.invited) - new Date(a.invited)
         );
@@ -150,7 +152,7 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
     display: block;
   }
 }
@@ -164,7 +166,7 @@ export default {
   max-height: 3rem;
   border: 1px solid rgba(black, 0.1);
   border-radius: 2px;
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
     border: none;
   }
 }

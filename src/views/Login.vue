@@ -56,9 +56,12 @@ div.login {
   justify-content: center;
   align-items: center;
   min-height: 500px;
+  button {
+    width: 130px;
+  }
 }
 img.logo {
-  width: 200px;
+  width: 180px;
   height: auto;
 }
 </style>
