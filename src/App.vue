@@ -28,6 +28,5 @@ export default {
 
 
 <style lang="scss">
-@import "../node_modules/nprogress/nprogress.css";
 @import "./styles/main.scss";
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-if="invite.accepted && !invite.granted" class="sm fullwidth" @click="indicateAccessGranted">Has GitHub access</button>
+    <button v-if="invite.accepted && !invite.granted" class="sm fullwidth" @click="indicateAccessGranted">Needs GitHub access</button>
     <transition name="toast">
       <div class="undoToast" v-if="showUndo" @click="showUndo=false">
         Thanks for adding @{{ oldInvite.github }} on GitHub!<button class="sm white ml-1" @click.stop="handleUndo">Oops - I didn't</button>

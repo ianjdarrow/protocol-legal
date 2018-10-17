@@ -2,17 +2,21 @@
   <div class="invite-row">
     <div class="left">
       <div>
-        <p>{{invite.name}}</p>
+        <p class="name">{{invite.name}}</p>
         <p class="org">{{invite.organization}}</p>
       </div>
       <div class="icons">
-        <a v-if="invite.github" :href="`https://github.com/${invite.github}`">
-          <img class="github" src="../assets/github.png" />
-        </a>
-        <img v-else src="../assets/github.png" class="github disabled" />
-        <a :href="`mailto:${invite.email}`">
-          <img class="email" src="../assets/empty-email.svg" />
-        </a>
+        <div class="icon-row">
+          <a v-if="invite.github" :href="`https://github.com/${invite.github}`">
+            <img class="github" src="../assets/github.png" /> <span>@{{invite.github}}</span>
+          </a>
+          <img v-else src="../assets/github.png" class="github disabled" />
+        </div>
+        <div class="icon-row">
+          <a :href="`mailto:${invite.email}`">
+            <img class="email" src="../assets/empty-email.svg" /><span>{{ invite.email }}</span>
+          </a>
+        </div>
       </div>
     </div>
     <div class="right">
@@ -51,7 +55,7 @@ export default {
 @import "../styles/_colors";
 .invite-row {
   position: relative;
-  height: 8rem;
+  height: 8.5rem;
   flex-basis: 49.7%;
   border-radius: 2px;
   padding: 1rem;
@@ -93,28 +97,44 @@ export default {
 }
 .icons {
   display: flex;
-  align-items: center;
-  padding-top: 0.5rem;
-  line-height: 1;
-  img {
-    margin: 0;
+  flex-direction: column;
+  padding-top: 1rem;
+  a {
+    color: $black;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  .icon-row {
+    display: flex;
+    align-items: center;
+    font-size: 80%;
     opacity: 0.7;
     &:hover {
       opacity: 1;
     }
-  }
-  img.github {
-    height: 16px;
-    width: auto;
-    margin-right: 0.5rem;
-    &.disabled {
-      opacity: 0.2;
-      cursor: not-allowed;
+    img {
+      margin: 0;
+      margin-right: 0.5rem;
+      flex-basis: 20%;
     }
-  }
-  img.email {
-    height: 20px;
-    width: auto;
+    img.github {
+      height: 1em;
+      width: auto;
+      &.disabled {
+        opacity: 0.2;
+        cursor: not-allowed;
+      }
+    }
+    img.email {
+      height: 1em;
+      width: auto;
+    }
+    span {
+      position: relative;
+      display: inline-block;
+      transform: translateY(-0.15rem);
+    }
   }
 }
 .invite-action {
