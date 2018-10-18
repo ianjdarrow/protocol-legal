@@ -9,3 +9,7 @@ export const levenshteinDistance = (s, t) => {
     ) + 1
   );
 };
+
+export const normalizedLevDistance = (s, t) => {
+  return levenshteinDistance(s, t) / s.length;
+};

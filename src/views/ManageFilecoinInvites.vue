@@ -22,7 +22,7 @@
         </div>
         <div class="input search">
           <label>Search (name, company...)</label>
-          <input v-model="search" @input="deriveFilteredInvites">
+          <input v-model="search" @keydown="deriveFilteredInvites" @keydown.escape="search = ''">
           <span class="clear-search" :hidden="search.length === 0" @click="search=''">&times;</span>
         </div>
       </div>
@@ -41,7 +41,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { levenshteinDistance } from "../lib/strings";
+import { levenshteinDistance, normalizedLevDistance } from "../lib/strings";
 
 import Nav from "../components/Nav";
 import AddInvite from "../components/AddInvite";
@@ -125,19 +125,21 @@ export default {
         }
       });
       const start = this.currentPage * this.resultsPerPage;
-      this.filteredInvites = initial.filter(i => {
-        if (search.length < 2) return true;
-        return (
-          i.email.toLowerCase().indexOf(search) >= 0 ||
-          i.name.toLowerCase().indexOf(search) >= 0 ||
-          (i.github && i.github.toLowerCase().indexOf(search) >= 0) ||
-          (i.organization && i.organization.toLowerCase().indexOf(search) >= 0)
+      if (search.length < 2) {
+        this.filteredInvites = initial.sort(
+          (a, b) => new Date(b.invited) - new Date(a.invited)
         );
-      });
-      // .sort(
-      //   (a, b) =>
-      //     levenshteinDistance(a, search) > levenshteinDistance(b, search)
-      // )
+      } else {
+        this.filteredInvites = initial.filter(i => {
+          return (
+            i.email.toLowerCase().indexOf(search) >= 0 ||
+            i.name.toLowerCase().indexOf(search) >= 0 ||
+            (i.github && i.github.toLowerCase().indexOf(search) >= 0) ||
+            (i.organization &&
+              i.organization.toLowerCase().indexOf(search) >= 0)
+          );
+        });
+      }
     },
     updateFilter: function(f) {
       this.filter = f;
@@ -206,7 +208,7 @@ export default {
     font-size: 1.5em;
     // padding: 0.5em;
     right: 0.25em;
-    top: -0.25em;
+    top: 0.125em;
     color: rgba(black, 0.2);
     &:hover {
       color: #222;
