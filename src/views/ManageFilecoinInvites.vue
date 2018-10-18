@@ -14,6 +14,7 @@
             <button class="sm pill" :class="filter === 'pending' ? 'active' : ''" @click="updateFilter('pending')">Pending</button>
             <button class="sm pill" :class="filter === 'waiting' ? 'active' : ''" @click="updateFilter('waiting')">Needs access</button>
             <button class="sm pill" :class="filter === 'onboard' ? 'active' : ''" @click="updateFilter('onboard')">Onboarded</button>
+            <button class="sm pill" :class="filter === 'mine' ? 'active' : ''" @click="updateFilter('mine')">Mine</button>
           </div>
         </div>
         <div class="input search">
@@ -22,28 +23,26 @@
           <span class="clear-search" :hidden="search.length === 0" @click="search=''">&times;</span>
         </div>
       </div>
-      <RenderInvites :invites="filteredInvites" :loading="loading" />
+      <RenderInvites :invites="paginatedInvites" :loading="loading" />
+      <div class="pagination" v-if="filteredInvites.length > resultsPerPage">
+        <span @click="setPage(0)" :class="currentPage > 0 ? 'active' : 'inactive'">&lt;&lt;</span>
+        <span @click="setPage(currentPage - 1)" :class="currentPage > 0 ? 'active' : 'inactive'">&lt;</span>
+        <span>{{ currentPage + 1 }}/{{ Math.ceil(filteredInvites.length / resultsPerPage) }}</span>
+        <span @click="setPage(currentPage + 1)" :class="currentPage < totalPages - 1 ? 'active' : 'inactive'">></span>
+        <span @click="setPage(totalPages - 1)" :class="currentPage < totalPages - 1 ? 'active' : 'inactive'">>></span>
+      </div>
+      <div class="pagination muted" v-else>End of results</div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import { levenshteinDistance } from "../lib/strings";
+
 import Nav from "../components/Nav";
 import AddInvite from "../components/AddInvite";
 import RenderInvites from "../components/RenderInvites";
-
-const levenshteinDistance = (s, t) => {
-  if (!s.length) return t.length;
-  if (!t.length) return s.length;
-  return (
-    Math.min(
-      levenshteinDistance(s.substr(1), t) + 1,
-      levenshteinDistance(t.substr(1), s) + 1,
-      levenshteinDistance(s.substr(1), t.substr(1)) + (s[0] !== t[0] ? 1 : 0)
-    ) + 1
-  );
-};
 
 export default {
   name: "ManageFilecoinInvites",
@@ -55,6 +54,8 @@ export default {
       filteredInvites: [],
       search: "",
       filter: "all",
+      resultsPerPage: 8,
+      currentPage: 0,
       loading: true
     };
   },
@@ -92,6 +93,11 @@ export default {
     setSearch: function(search) {
       this.search = search;
     },
+    setPage: function(page) {
+      if (page < 0) page = 0;
+      if (page > this.totalPages - 1) page = this.totalPages - 1;
+      this.currentPage = page;
+    },
 
     // this is a horrible hack. i had surprising issues getting Vue to
     // re-render a computed property when the filter function changed.
@@ -102,31 +108,33 @@ export default {
     deriveFilteredInvites: function() {
       const search = this.search.toLowerCase();
       const initial = this.invites.filter(i => {
-        if (this.filter === "all") return true;
-        if (this.filter === "pending") return i.invited && !i.accepted;
-        if (this.filter === "waiting") return i.accepted && !i.granted;
-        if (this.filter === "onboard") return i.granted;
+        switch (this.filter) {
+          case "pending":
+            return i.invited && !i.accepted;
+          case "waiting":
+            return i.accepted && !i.granted;
+          case "onboard":
+            return i.granted;
+          case "mine":
+            return i.invitedBy.email === this.user.email;
+          default:
+            return true;
+        }
       });
-      if (search.length < 2) {
-        this.filteredInvites = initial.sort(
-          (a, b) => new Date(b.invited) - new Date(a.invited)
+      const start = this.currentPage * this.resultsPerPage;
+      this.filteredInvites = initial.filter(i => {
+        if (search.length < 2) return true;
+        return (
+          i.email.toLowerCase().indexOf(search) >= 0 ||
+          i.name.toLowerCase().indexOf(search) >= 0 ||
+          (i.github && i.github.toLowerCase().indexOf(search) >= 0) ||
+          (i.organization && i.organization.toLowerCase().indexOf(search) >= 0)
         );
-        return;
-      }
-      this.filteredInvites = initial
-        .filter(i => {
-          return (
-            i.email.toLowerCase().indexOf(search) >= 0 ||
-            i.name.toLowerCase().indexOf(search) >= 0 ||
-            (i.github && i.github.toLowerCase().indexOf(search) >= 0) ||
-            (i.organization &&
-              i.organization.toLowerCase().indexOf(search) >= 0)
-          );
-        })
-        .sort(
-          (a, b) =>
-            levenshteinDistance(a, search) > levenshteinDistance(b, search)
-        );
+      });
+      // .sort(
+      //   (a, b) =>
+      //     levenshteinDistance(a, search) > levenshteinDistance(b, search)
+      // )
     },
     updateFilter: function(f) {
       this.filter = f;
@@ -134,8 +142,16 @@ export default {
     }
   },
   computed: {
+    paginatedInvites: function() {
+      const start = this.currentPage * this.resultsPerPage;
+      return this.filteredInvites.slice(start, start + this.resultsPerPage);
+    },
+    totalPages: function() {
+      return Math.ceil(this.filteredInvites.length / this.resultsPerPage);
+    },
     ...mapState({
-      db: state => state.db
+      db: state => state.db,
+      user: state => state.user
     })
   },
   watch: {
@@ -193,6 +209,25 @@ export default {
       color: #222;
       cursor: pointer;
     }
+  }
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  font-family: monospace;
+  margin-top: 1rem;
+  span {
+    padding: 0.5rem;
+  }
+  span.active {
+    cursor: pointer;
+    opacity: 0.7;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  span.inactive {
+    opacity: 0.25;
   }
 }
 </style>
