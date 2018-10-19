@@ -13,14 +13,11 @@
             <input type="email" v-model="form.email">
           </div>
           <div class="input mb-1">
-            <label>Organization (optional)</label>
-            <input type="text" v-model="form.organization">
-          </div>
-          <div class="input mb-1">
             <label>GitHub username (optional)</label>
             <input type="text" class="helper" v-model="form.github">
             <span class="helper">@</span>
           </div>
+          <Autocomplete class="mb-1" v-model="form.organization" :searchFunction="searchOrganizations" label="Organization (optional)" />
           <button type="submit" class="fullwidth" :disabled="!formValid">Send invite!</button>
         </form>
       </div>
@@ -31,12 +28,15 @@
 <script>
 import uuid from "uuid/v4";
 import { mapState } from "vuex";
+import { levenshteinDistance } from "../lib/strings";
+import Autocomplete from "./Autocomplete";
 
 const emailRe = /\S+@\S+\.\S+/;
 
 export default {
   name: "AddInvite",
   props: ["invites", "show"],
+  components: { Autocomplete },
   data() {
     return {
       form: {
@@ -49,6 +49,16 @@ export default {
     };
   },
   methods: {
+    searchOrganizations: function(search) {
+      search = search.toLowerCase();
+      return this.allOrganizations
+        .filter(i => i.toLowerCase().indexOf(search) > -1)
+        .sort(
+          (a, b) =>
+            levenshteinDistance(b, search) > levenshteinDistance(a, search)
+        )
+        .slice(0, 3);
+    },
     handleSubmit: async function() {
       const email = this.form.email.toLowerCase();
       const github = this.form.github.toLowerCase();
@@ -93,6 +103,13 @@ export default {
     }
   },
   computed: {
+    allOrganizations: function() {
+      return Array.from(
+        new Set(
+          this.invites.filter(i => i.organization).map(i => i.organization)
+        )
+      );
+    },
     formValid: function() {
       return emailRe.test(this.form.email) && this.form.name;
     },

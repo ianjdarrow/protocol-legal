@@ -97,9 +97,9 @@ export default {
       this.search = search;
     },
     setPage: function(page) {
-      if (page < 0) page = 0;
-      if (page > this.totalPages - 1) page = this.totalPages - 1;
-      this.currentPage = page;
+      if (page < this.currentPage) this.currentPage = Math.max(page, 0);
+      if (page > this.currentPage)
+        this.currentPage = Math.min(page, this.totalPages - 1);
     },
 
     // this is a horrible hack. i had surprising issues getting Vue to
