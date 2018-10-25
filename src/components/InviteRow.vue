@@ -10,7 +10,9 @@
           <a v-if="invite.github" :href="`https://github.com/${invite.github}`" target="_blank">
             <img class="github" src="../assets/github.png" /> <span>@{{invite.github}}</span>
           </a>
-          <img v-else src="../assets/github.png" class="github disabled" />
+          <a v-else>
+            <img src="../assets/github.png" class="github disabled" />
+          </a>
         </div>
         <div class="icon-row">
           <a :href="`mailto:${invite.email}`">
@@ -33,7 +35,7 @@
       </div>
       <GrantAccessWidget :invite="invite" />
     </div>
-    <span class="link">&#9656;</span>
+    <span class="link" @click="$router.push(`/manage-invites/${invite.id}`)">&#9656;</span>
   </div>
 </template>
 

@@ -18,7 +18,7 @@
             <span class="helper">@</span>
           </div>
           <Autocomplete class="mb-1" v-model="form.organization" :searchFunction="searchOrganizations" label="Organization (optional)" />
-          <button type="submit" class="fullwidth" :disabled="!formValid">Send invite!</button>
+          <SubmitButton :step="step" />
         </form>
       </div>
     </transition>
@@ -30,13 +30,14 @@ import uuid from "uuid/v4";
 import { mapState } from "vuex";
 import { levenshteinDistance } from "../lib/strings";
 import Autocomplete from "./Autocomplete";
+import SubmitButton from "./SubmitButton";
 
 const emailRe = /\S+@\S+\.\S+/;
 
 export default {
   name: "AddInvite",
   props: ["invites", "show"],
-  components: { Autocomplete },
+  components: { Autocomplete, SubmitButton },
   data() {
     return {
       form: {
@@ -45,7 +46,8 @@ export default {
         organization: "",
         github: ""
       },
-      loading: false
+      loading: false,
+      step: 0
     };
   },
   methods: {
@@ -60,39 +62,51 @@ export default {
         .slice(0, 3);
     },
     handleSubmit: async function() {
-      const email = this.form.email.toLowerCase();
-      const github = this.form.github.toLowerCase();
-      const alreadyAdded = this.invites.filter(
-        i => i.email === email || (i.github && i.github === github)
-      );
-      if (alreadyAdded.length > 0) {
-        this.$store.commit("setFlash", "Already invited!");
-        this.$emit("setSearch", alreadyAdded[0].email);
+      if (this.step === 0) {
+        this.step++;
+        setTimeout(() => {
+          if (this.step === 1) this.step = 0;
+        }, 5000);
         return;
       }
-      const payload = {
-        ...this.form,
-        email: this.form.email.toLowerCase(),
-        invitedBy: this.user,
-        invited: new Date().toISOString()
-      };
-      this.loading = true;
-      try {
-        const result = await this.db.collection("invites").add(payload);
-        // result.id has the ID we need
-        console.log("Invite code:", result.id);
-        this.$store.commit("setFlash", `Invited ${this.form.email}!`);
-        setTimeout(() => this.$store.commit("clearFlash"), 2500);
-        this.clearForm();
-        this.$refs.name.focus();
-      } catch (err) {
-        console.error(err);
-        this.$store.commit(
-          "setFlash",
-          "Error sending invite! Email ian@protocol.ai and tell him to fix it."
+      if (this.step === 1) {
+        const email = this.form.email.toLowerCase();
+        const github = this.form.github.toLowerCase();
+        const alreadyAdded = this.invites.filter(
+          i => i.email === email || (i.github && i.github === github)
         );
+        if (alreadyAdded.length > 0) {
+          this.$store.commit("setFlash", "Already invited!");
+          this.$emit("setSearch", alreadyAdded[0].email);
+          this.step = 0;
+          return;
+        }
+        const payload = {
+          ...this.form,
+          email: this.form.email.toLowerCase(),
+          invitedBy: this.user,
+          invited: new Date().toISOString()
+        };
+        this.loading = true;
+        try {
+          const result = await this.db.collection("invites").add(payload);
+          // result.id has the ID we need
+          console.log("Invite code:", result.id);
+          this.$store.commit("setFlash", `Invited ${this.form.email}!`);
+          setTimeout(() => this.$store.commit("clearFlash"), 2500);
+          this.clearForm();
+          this.$refs.name.focus();
+        } catch (err) {
+          console.error(err);
+          this.$store.commit(
+            "setFlash",
+            "Error sending invite! Email ian@protocol.ai and tell him to fix it."
+          );
+        }
+        this.loading = false;
+        this.step = 2;
+        setTimeout(() => (this.step = 0), 2000);
       }
-      this.loading = false;
     },
     clearForm: function() {
       this.form = {

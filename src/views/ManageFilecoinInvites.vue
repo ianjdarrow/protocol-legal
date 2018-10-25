@@ -59,33 +59,39 @@ export default {
       filter: "all",
       resultsPerPage: 8,
       currentPage: 0,
-      loading: true
+      loading: true,
+      unsub: null
     };
   },
   async mounted() {
     // handles real-time updates
-    this.$store.state.db.collection("invites").onSnapshot(updates => {
-      // firestore gives you a nice "added, modified, renewed" field that
-      // lets us cleanly work with our local cache
-      // the entire collection is "added" once at initial load
-      updates.docChanges().forEach(change => {
-        const data = { ...change.doc.data(), id: change.doc.id };
-        if (change.type === "added") {
-          this.invites.push(data);
-        }
-        // not a new item – so we will be manipulating an existing item
-        const itemIndex = this.invites.findIndex(item => item.id === data.id);
+    this.unsub = this.$store.state.db
+      .collection("invites")
+      .onSnapshot(updates => {
+        // firestore gives you a nice "added, modified, renewed" field that
+        // lets us cleanly work with our local cache
+        // the entire collection is "added" once at initial load
+        updates.docChanges().forEach(change => {
+          const data = { ...change.doc.data(), id: change.doc.id };
+          if (change.type === "added") {
+            this.invites.push(data);
+          }
+          // not a new item – so we will be manipulating an existing item
+          const itemIndex = this.invites.findIndex(item => item.id === data.id);
 
-        if (change.type === "modified") {
-          this.invites[itemIndex] = data;
-        }
-        if (change.type === "removed") {
-          this.invites.splice(itemIndex, 1);
-        }
-        this.deriveFilteredInvites();
-        this.loading = false;
+          if (change.type === "modified") {
+            this.invites[itemIndex] = data;
+          }
+          if (change.type === "removed") {
+            this.invites.splice(itemIndex, 1);
+          }
+          this.deriveFilteredInvites();
+          this.loading = false;
+        });
       });
-    });
+  },
+  beforeDestroy() {
+    this.unsub();
   },
   methods: {
     toggleShow: function() {
