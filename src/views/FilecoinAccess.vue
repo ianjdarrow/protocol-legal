@@ -9,17 +9,28 @@
       <hr />
       <p>Thanks for joining us as we work towards the public testnet and launch. We asked you to join because we value your deep expertise and thoughtful approach across a number of problem areas. Above all, we are grateful for your help, critique, PRs, ideas, and questions.</p>
       <div class="rules">
-        <div class="side-image">
-          <img class="illustration-side" src="../assets/invites/invite-tos-side.png" /></div>
+        <img class="side-image" src="../assets/invites/invite-tos-side.png" />
         <div class="content">
-          <h1>Private preview rules</h1>
+          <h1 ref="rules">Private preview rules</h1>
+          <span class="muted subtext">Check to agree</span>
           <hr />
           <ul>
-            <li>I agree not to share any code or information I receive as part of the private preview.</li>
-            <li>I agree not to use the Filecoin network to upload or share content that's illegal or violates the IP rights of others. I'll remove any such content if I'm able to do so.</li>
-            <li>I agree not to host a generally-accessible file upload service until the private preview ends (when the public testnet launches).</li>
-            <li>I agree not to blog, write, tweet, or otherwise publicly discuss the project or my participation until the public testnet launches.</li>
-            <li>I understand that I’m being granted access only for testing, collaboration, and feedback, and that there are no uptime or reliability guarantees.</li>
+            <li>
+              <input type="checkbox" id="check1" v-model="checks[0]" class="styled-checkbox" />
+              <label for="check1">I agree not to share any code or information I receive as part of the private preview.</label>
+            </li>
+            <li>
+              <input type="checkbox" id="check2" v-model="checks[1]" class="styled-checkbox" />
+              <label for="check2">I agree not to use the Filecoin network to upload or share content that's illegal or violates the IP rights of others. I'll remove any such content if I'm able to do so.</label></li>
+            <li>
+              <input type="checkbox" id="check3" v-model="checks[2]" class="styled-checkbox" />
+              <label for="check3">I agree not to host a generally-accessible file upload service until the private preview ends (when the public testnet launches).</label></li>
+            <li>
+              <input type="checkbox" id="check4" v-model="checks[3]" class="styled-checkbox" />
+              <label for="check4">I agree not to blog, write, tweet, or otherwise publicly discuss the project or my participation until the public testnet launches.</label></li>
+            <li>
+              <input type="checkbox" id="check5" v-model="checks[4]" class="styled-checkbox" />
+              <label for="check5">I understand that I’m being granted access only for testing, collaboration, and feedback, and that there are no uptime or reliability guarantees.</label></li>
           </ul>
           <p>Your access may be revoked if you violate these rules. If you have any questions, email
             <a href="mailto:legalrequests@protocol.ai">legalrequests@protocol.ai</a>, or feel free to reach out to another Protocol Labs contact.</p>
@@ -31,16 +42,16 @@
         <form @submit.prevent="handleSubmit">
           <div class="input mb-1 mt-1">
             <label>Your GitHub username</label>
-            <input type="text" class="helper" v-model="form.github">
+            <input type="text" class="helper" v-model="form.github" ref="github">
             <span class="helper">@</span>
           </div>
-          <button type="submit" class="filecoin" :disabled="!formValid">
+          <button type="submit" class="filecoin">
             Agree and submit
           </button>
         </form>
-        <div class="bottom-border" />
       </div>
     </div>
+    <div class="bottom-border" />
   </div>
 </template>
 
@@ -63,7 +74,7 @@ export default {
       form: {
         github: ""
       },
-      tosAgreed: false
+      checks: [false, false, false, false, false]
     };
   },
   async mounted() {
@@ -75,6 +86,7 @@ export default {
         .get();
       if (!invite.exists) {
         console.log("no such invite");
+        // this.$router.push('/');
         // this.$store.commit("setFlash", "Invalid invite code");
         return;
       }
@@ -92,20 +104,38 @@ export default {
   },
   methods: {
     handleSubmit: async function() {
-      const geoData = await getGeoData();
+      if (!this.formValid) {
+        if (!this.checks.every(c => c)) {
+          this.$store.commit(
+            "setFlash",
+            "Please agree to the rules by checking each box."
+          );
+          this.$refs.rules.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+          return;
+        }
+        if (this.form.github.length < 2) {
+          this.$store.commit("setFlash", "Please enter your GitHub username.");
+          this.$refs.github.focus();
+          return;
+        }
+      }
+      // const geoData = await getGeoData();
       const result = await this.db
         .collection("invites")
         .doc(this.$route.params.token)
         .update({
-          accepted: new Date().toISOString(),
-          acceptanceMetadata: geoData
+          accepted: new Date().toISOString()
+          // acceptanceMetadata: geoData
         });
       this.$router.push("/registration-confirmation");
     }
   },
   computed: {
     formValid: function() {
-      return this.form.github.length > 1 && this.tosAgreed;
+      return this.form.github.length > 1 && this.checks.every(c => c);
     },
     ...mapState({
       db: state => state.db
@@ -128,7 +158,6 @@ hr {
   padding-top: 320px;
   max-width: 1200px;
   margin: 0 auto;
-  position: relative;
   a {
     line-height: 1;
   }
@@ -176,36 +205,52 @@ hr {
   padding-top: 100px;
   padding-bottom: 100px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   @media (max-width: 600px) {
     padding-top: 60px;
     padding-bottom: 60px;
   }
   .side-image {
-    flex-basis: 38%;
-    @media (max-width: 1200px) {
-      position: relative;
-      flex-basis: 45%;
-      transform: translateX(-1rem);
+    position: absolute;
+    left: 0;
+    transform: translateY(-50px);
+    height: auto;
+    width: 50vw;
+    max-width: 600px;
+    @media (max-width: 1000px) {
+      transform: none;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 800px) {
       display: none;
-    }
-    .illustration-side {
-      width: 100%;
-      height: auto;
     }
   }
   .content {
-    flex-basis: 56%;
+    width: 50vw;
+    padding-left: 1rem;
+    box-sizing: border-box;
+    li {
+      list-style-type: none;
+      position: relative;
+      label::before {
+        position: absolute;
+        transform: translate(-2rem, 0.55rem);
+      }
+      label::after {
+        position: absolute;
+        transform: translate(-2rem, 0.3rem) rotate(45deg);
+      }
+    }
     h1 {
       margin-bottom: 2rem;
     }
-    @media (max-width: 1200px) {
-      flex-basis: 53%;
+    span.subtext {
+      position: absolute;
+      transform: translateY(-2rem);
+      font-style: italic;
     }
-    @media (max-width: 900px) {
-      flex-basis: 100%;
+    @media (max-width: 800px) {
+      width: auto;
+      padding-left: 0;
     }
   }
 }
@@ -231,15 +276,17 @@ hr {
     }
   }
   button.filecoin {
-    float: right;
+    margin: 0 auto;
+    margin-top: 2rem;
+    display: block;
   }
-  .bottom-border {
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 8px;
-    background: linear-gradient(to right, rgb(72, 31, 142), rgb(0, 226, 231));
-  }
+}
+.bottom-border {
+  margin-left: -2rem;
+  margin-right: -2rem;
+  margin-bottom: -1rem;
+  bottom: 0;
+  height: 12px;
+  background: linear-gradient(to right, rgb(72, 31, 142), rgb(0, 226, 231));
 }
 </style>

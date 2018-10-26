@@ -5,9 +5,9 @@
       <img class="rocket" src="../assets/invites/invite-confirmation.png">
       <img class="filecoin-logo" src="../assets/invites/filecoin-logo-color.svg">
       <div class="content">
-        <h1>Request confirmed!</h1>
+        <h1>Welcome aboard!</h1>
         <hr />
-        <p>We're excited you're joining the Filecoin private preview. Expect GitHub access within 48 hours.</p>
+        <p>We're excited you're joining the Filecoin private preview. Expect GitHub and Discourse access within 48 hours.</p>
         <a href="https://filecoin.io">
           <button class="filecoin mt-1">OK</button>
         </a>
@@ -21,6 +21,7 @@
 $padding: 2.5rem;
 .flex {
   background: rgb(132, 92, 235);
+  box-sizing: border-box;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -43,7 +44,7 @@ $padding: 2.5rem;
   box-shadow: 0 4px 8px rgba(black, 0.13);
   @media (max-width: 600px) {
     height: 85%;
-    max-height: none;
+    max-height: 160vw;
   }
 }
 .rocket {
@@ -68,6 +69,7 @@ $padding: 2.5rem;
 }
 .content {
   position: absolute;
+  padding-right: 1rem;
   bottom: 10%;
   hr {
     width: 80px;
@@ -76,7 +78,7 @@ $padding: 2.5rem;
   }
   p {
     font-size: 125%;
-    max-width: 38ch;
+    max-width: 40ch;
   }
   @media (max-width: 600px) {
     bottom: $padding;
