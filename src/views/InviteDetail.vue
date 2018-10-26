@@ -2,15 +2,17 @@
   <div>
     <Nav />
     <div class="container">
-      <div v-if="loading">
-        <Loader />
-      </div>
-      <div v-else>
-        <h2 class="mt-1"><span class="muted link" @click="$router.push('/manage-invites')">Filecoin invites ></span> {{invite.name}}</h2>
-        <p>Invited by {{invite.invitedBy.name}} on {{formatDate(invite.invited)}}</p>
-        <p v-if="invite.acceptanceMetadata">
-          Accepted on {{formatDate(invite.accepted)}} in {{ invite.acceptanceMetadata.city }}, {{ invite.acceptanceMetadata.region_code }}, {{ invite.acceptanceMetadata.country_name }}
-        </p>
+      <div>
+        <h2 class="mt-1"><span class="muted link" @click="$router.push('/manage-invites')">Filecoin invites ></span><span v-if="!loading"> {{invite.name}}</span></h2>
+        <div v-if="loading">
+          <Loader />
+        </div>
+        <div v-else>
+          <p>Invited by {{invite.invitedBy.name}} on {{formatDate(invite.invited)}}</p>
+          <p v-if="invite.acceptanceMetadata">
+            Accepted on {{formatDate(invite.accepted)}} in {{ invite.acceptanceMetadata.city }}, {{ invite.acceptanceMetadata.region_code }}, {{ invite.acceptanceMetadata.country_name }}
+          </p>
+        </div>
       </div>
     </div>
   </div>

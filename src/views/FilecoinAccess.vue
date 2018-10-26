@@ -1,51 +1,45 @@
 <template>
   <!-- The page displayed to users who receive a filecoin invite -->
   <div class="invite-container" :key="$route.params.token">
-    <div class="logos">
-      <a href="https://filecoin.io">
-        <img class="logo-s" src="../assets/filecoin.png" />
-      </a>
-      <a href="https://protocol.ai">
-        <img class="logo-l" src="../assets/pl.svg" />
-      </a>
-    </div>
+    <img class="logo-top" src="../assets/invites/filecoin-logo-color.svg" />
+    <img class="illustration-top" src="../assets/invites/invite-tos-top.png" />
     <div class="tos">
-      <h1>Welcome to the Filecoin private preview! <img class="emoji" src="../assets/party.png" /></h1>
+      <h1>Welcome to the</h1>
+      <h1>Filecoin private preview!</h1>
       <hr />
       <p>Thanks for joining us as we work towards the public testnet and launch. We asked you to join because we value your deep expertise and thoughtful approach across a number of problem areas. Above all, we are grateful for your help, critique, PRs, ideas, and questions.</p>
-      <p>Once you confirm your participation:</p>
-      <ul>
-        <li>You’ll be added to the Filecoin Github repo.</li>
-        <li>You can provide general discussion, ideas, and feedback
-          <a href="https://a.link">here</a>. Security reports go
-          <a href="https://a.link">here</a>.</li>
-        <li>Please be on the lookout for emails or surveys asking for input on specific topics.</li>
-        <li>If the above channels don’t fit a conversation you’d like to have, email
-          <a href="mailto:filecoin@protocol.ai">filecoin@protocol.ai</a> at any time.</li>
-      </ul>
-      <h3>Private preview rules</h3>
-      <p>Please review the rules for the private preview.</p>
-      <ul>
-        <li>I agree not to share any code or information I receive as part of the private preview.</li>
-        <li>I agree not to use the Filecoin network to upload or share content that's illegal or violates the IP rights of others. I'll remove any such content if I'm able to do so.</li>
-        <li>I agree not to host a generally-accessible file upload service until the private preview ends (when the public testnet launches).</li>
-        <li>I agree not to blog, write, tweet, or otherwise publicly discuss the project or my participation until the public testnet launches.</li>
-        <li>I understand that I’m being granted access only for testing, collaboration, and feedback, and that there are no uptime or reliability guarantees.</li>
-      </ul>
-      <p>Your access may be revoked if you violate these rules. If you have any questions, email
-        <a href="mailto:legalrequests@protocol.ai">legalrequests@protocol.ai</a>, or feel free to reach out to another Protocol Labs contact.</p>
-      <hr class="mt-1 mb-1" />
-      <form @submit.prevent="handleSubmit" v-if="invitee.email && !invitee.accepted">
-        <div class="input mb-1 mt-1">
-          <label>Your GitHub username</label>
-          <input type="text" class="helper" v-model="form.github">
-          <span class="helper">@</span>
+      <div class="rules">
+        <div class="side-image">
+          <img class="illustration-side" src="../assets/invites/invite-tos-side.png" /></div>
+        <div class="content">
+          <h1>Private preview rules</h1>
+          <hr />
+          <ul>
+            <li>I agree not to share any code or information I receive as part of the private preview.</li>
+            <li>I agree not to use the Filecoin network to upload or share content that's illegal or violates the IP rights of others. I'll remove any such content if I'm able to do so.</li>
+            <li>I agree not to host a generally-accessible file upload service until the private preview ends (when the public testnet launches).</li>
+            <li>I agree not to blog, write, tweet, or otherwise publicly discuss the project or my participation until the public testnet launches.</li>
+            <li>I understand that I’m being granted access only for testing, collaboration, and feedback, and that there are no uptime or reliability guarantees.</li>
+          </ul>
+          <p>Your access may be revoked if you violate these rules. If you have any questions, email
+            <a href="mailto:legalrequests@protocol.ai">legalrequests@protocol.ai</a>, or feel free to reach out to another Protocol Labs contact.</p>
         </div>
-        <button type="button" class="sm fullwidth mb-1 agree-button" :class="tosAgreed ? 'active' : ''" @click="tosAgreed = !tosAgreed">I agree to the private preview rules</button>
-        <button type="submit" class="fullwidth" :disabled="!formValid">
-          Request access
-        </button>
-      </form>
+      </div>
+      <div class="footer">
+        <h1>Get your access!</h1>
+        <hr />
+        <form @submit.prevent="handleSubmit">
+          <div class="input mb-1 mt-1">
+            <label>Your GitHub username</label>
+            <input type="text" class="helper" v-model="form.github">
+            <span class="helper">@</span>
+          </div>
+          <button type="submit" class="filecoin" :disabled="!formValid">
+            Agree and submit
+          </button>
+        </form>
+        <div class="bottom-border" />
+      </div>
     </div>
   </div>
 </template>
@@ -81,7 +75,7 @@ export default {
         .get();
       if (!invite.exists) {
         console.log("no such invite");
-        this.$store.commit("setFlash", "Bad invite code.");
+        // this.$store.commit("setFlash", "Invalid invite code");
         return;
       }
       this.invitee = invite.data();
@@ -121,50 +115,131 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../styles/_colors";
+hr {
+  width: 80px;
+  height: 3px;
+  background: $filecoin;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
 .invite-container {
-  padding: 0.5rem;
-  max-width: 65ch;
+  padding: 1rem;
+  padding-top: 320px;
+  max-width: 1200px;
   margin: 0 auto;
+  position: relative;
   a {
     line-height: 1;
   }
-}
-.logos {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-}
-.logo-s {
-  width: 100px;
-  height: auto;
-  margin-right: 1rem;
-}
-.logo-l {
-  width: 130px;
-  height: auto;
-  margin-left: 1rem;
+  .illustration-top {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 60%;
+  }
+  .logo-top {
+    position: absolute;
+    width: 24%;
+    top: 3rem;
+  }
+  @media (max-width: 600px) {
+    .illustration-top {
+      width: 100%;
+    }
+    .logo-top {
+      display: none;
+    }
+  }
 }
 .tos {
   h1 {
-    text-align: center;
     font-weight: 500;
+    font-size: 3rem;
     line-height: 1;
     margin: 0;
     margin-bottom: 0.5rem;
+    @media (max-width: 600px) {
+      font-size: 2rem;
+    }
   }
-  .emoji {
-    height: 1em;
-    line-height: 1;
-    margin: 0;
-    margin-left: 0.25em;
+  p,
+  li {
+    font-size: 135%;
+    max-width: 55ch;
+    @media (max-width: 600px) {
+      font-size: 120%;
+    }
   }
 }
-.agree-button {
-  opacity: 0.5;
-  &.active {
-    opacity: 1;
-    background: #98fb98;
+.rules {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  display: flex;
+  justify-content: space-between;
+  @media (max-width: 600px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  .side-image {
+    flex-basis: 38%;
+    @media (max-width: 1200px) {
+      position: relative;
+      flex-basis: 45%;
+      transform: translateX(-1rem);
+    }
+    @media (max-width: 900px) {
+      display: none;
+    }
+    .illustration-side {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .content {
+    flex-basis: 56%;
+    h1 {
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 1200px) {
+      flex-basis: 53%;
+    }
+    @media (max-width: 900px) {
+      flex-basis: 100%;
+    }
+  }
+}
+.footer {
+  padding-bottom: 150px;
+  max-width: 800px;
+  margin: 0 auto;
+  h1 {
+    text-align: center;
+  }
+  hr {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  input {
+    border-radius: 0;
+    border: none;
+    background: transparent;
+    border-bottom: 1px solid rgba(black, 0.3);
+    &:focus {
+      border: none;
+      border-bottom: 1px solid rgba(black, 0.7);
+    }
+  }
+  button.filecoin {
+    float: right;
+  }
+  .bottom-border {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, rgb(72, 31, 142), rgb(0, 226, 231));
   }
 }
 </style>

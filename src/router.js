@@ -4,8 +4,6 @@ import NProgress from "nprogress";
 
 import Login from "./views/Login.vue";
 import Dashboard from "./views/Dashboard.vue";
-import FilecoinAccess from "./views/FilecoinAccess.vue";
-import RegistrationConfirmation from "./views/RegistrationConfirmation.vue";
 import InviteDetail from "./views/InviteDetail.vue";
 
 import store from "./store";
@@ -28,12 +26,12 @@ const router = new Router({
     {
       path: "/filecoin-invite/:token",
       name: "FilecoinAccess",
-      component: FilecoinAccess
+      component: () => import("./views/FilecoinAccess.vue")
     },
     {
       path: "/registration-confirmation",
       name: "RegistrationConfirmation",
-      component: RegistrationConfirmation
+      component: () => import("./views/RegistrationConfirmation.vue")
     },
     {
       path: "/login",

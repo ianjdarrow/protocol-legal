@@ -4,7 +4,7 @@
     <Nav />
     <div class="container">
       <h2 class="mt-1">Filecoin invites
-        <span class="muted light">(<span v-if="filteredInvites.length < invites.length">{{filteredInvites.length}}/</span>{{ invites.length }})</span>
+        <span v-if="!loading" class="muted light">(<span v-if="filteredInvites.length < invites.length">{{filteredInvites.length}}/</span>{{ invites.length }})</span>
       </h2>
       <button class="sm fullwidth mb-1" @click="toggleShow">
         {{ show ? 'Hide form' : 'Add new user' }}
