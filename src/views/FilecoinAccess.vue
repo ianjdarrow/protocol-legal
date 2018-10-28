@@ -159,7 +159,7 @@ h1 {
   padding: 1rem;
   box-sizing: border-box;
   overflow: hidden;
-  font-size: 120%;
+  font-size: 125%;
 }
 .top-section {
   display: flex;
@@ -211,7 +211,7 @@ h1 {
     font-size: 80%;
     font-style: italic;
   }
-  @media (max-width: 700px) {
+  @media (max-width: 800px) {
     display: block;
     padding-top: 60px;
   }
@@ -219,6 +219,7 @@ h1 {
     list-style-type: none;
     margin-left: 2rem;
     li {
+      padding-bottom: 1rem;
       label:before {
         position: absolute;
         transform: translate(-2rem, 0.5rem);
@@ -230,7 +231,7 @@ h1 {
     }
   }
   .left {
-    @media (max-width: 700px) {
+    @media (max-width: 800px) {
       display: none;
     }
     img {
@@ -238,7 +239,7 @@ h1 {
       top: -3rem;
       left: -1rem;
       width: 45%;
-      max-width: 550px;
+      max-width: 640px;
       pointer-events: none;
     }
   }
@@ -247,6 +248,9 @@ h1 {
     max-width: 45ch;
     @media (min-width: 1000px) {
       margin-right: calc(35vw - 350px);
+    }
+    @media (max-width: 800px) {
+      max-width: 55ch;
     }
   }
 }
