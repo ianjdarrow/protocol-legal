@@ -12,10 +12,10 @@
     </div>
     <div class="bottom-section">
       <div class="left">
-        <img class="side-image" src="../assets/invites/invite-tos-side.png" />
+        <img ref="rules" class="side-image" src="../assets/invites/invite-tos-side.png" />
       </div>
       <div class="right">
-        <h1 ref="rules">Private preview rules</h1>
+        <h1>Private preview rules</h1>
         <span class="muted subtext">Check to agree</span>
         <hr />
         <ul>
@@ -266,6 +266,9 @@ h1 {
   }
   button {
     float: right;
+    @media (max-width: 640px) {
+      width: 100%;
+    }
   }
 }
 hr {

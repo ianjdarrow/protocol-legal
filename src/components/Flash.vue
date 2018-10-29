@@ -2,9 +2,9 @@
   <!-- A normal flash, used to display messages -->
   <!-- See `store.js` for usage -->
   <transition name="flash">
-    <div class="flash" v-if="flash.active">
+    <div class="flash" v-if="flash.active" @click="$store.commit('clearFlash')">
       <p>{{ flash.message }}</p>
-      <span class="exit" @click="$store.commit('clearFlash')">&times;</span>
+      <span class="exit">&times;</span>
     </div>
   </transition>
 </template>
@@ -25,31 +25,32 @@ export default {
 @import "../styles/_colors";
 .flash {
   z-index: 1000;
-  border: 5px solid $black;
-  background: #f2f2f2;
-  padding: 1rem;
+  background: rgba(#222, 0.9);
+  color: white;
+  padding: 1.5rem;
   box-sizing: border-box;
   width: 100%;
-  max-width: 640px;
-  left: 50%;
-  transform: translateX(-50%);
   position: fixed;
-  top: 1rem;
+  left: 0;
+  top: 0;
   transition: all 0.25s ease-in-out;
   display: flex;
   align-items: center;
+  justify-content: center;
   p {
     line-height: 1;
     margin: 0;
   }
   .exit {
     position: absolute;
+    font-size: 1.5rem;
     right: 0;
-    padding: 0.75rem;
-    color: rgba(black, 0.3);
+    padding: 0.5rem;
+    transform: translateY(-1px);
+    color: rgba(white, 0.3);
     cursor: pointer;
     &:hover {
-      color: $black;
+      color: white;
     }
   }
 }
