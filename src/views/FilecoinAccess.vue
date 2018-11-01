@@ -64,7 +64,7 @@ const emailRe = /\S+@\S+\.\S+/;
 
 const getGeoData = () => {
   return new Promise(async res => {
-    const response = await fetch("https://geoip.tools/v1/json");
+    const response = await fetch("https://ipinfo.io/json");
     res(response.json());
   });
 };
@@ -125,13 +125,14 @@ export default {
           return;
         }
       }
-      // const geoData = await getGeoData();
+      const geoData = await getGeoData();
       const result = await this.db
         .collection("invites")
         .doc(this.$route.params.token)
         .update({
-          accepted: new Date().toISOString()
-          // acceptanceMetadata: geoData
+          github: this.form.github,
+          accepted: new Date().toISOString(),
+          acceptanceMetadata: geoData
         });
       this.$router.push("/registration-confirmation");
     }
@@ -169,7 +170,7 @@ h1 {
     display: block;
   }
   .left {
-    padding-top: 100px;
+    padding-top: 112px;
     flex-basis: 65%;
     @media (min-width: 1000px) {
       margin-left: calc(35vw - 350px);
@@ -183,7 +184,7 @@ h1 {
     .logo-top {
       position: absolute;
       width: 30%;
-      max-width: 320px;
+      max-width: 300px;
       top: 0;
     }
   }
@@ -207,7 +208,7 @@ h1 {
   }
   span {
     position: absolute;
-    transform: translateY(-0.25rem);
+    transform: translateY(-0.33rem);
     font-size: 80%;
     font-style: italic;
   }

@@ -20,7 +20,6 @@ typography.options = {
   headerFontFamily: typography.options.headerFontFamily.unshift("Ubuntu"),
   headerWeight: 400
 };
-console.log(typography);
 typography.injectStyles();
 export default {
   name: "App",
@@ -36,6 +35,5 @@ export default {
 
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css?family=Ubuntu");
 @import "./styles/main.scss";
 </style>
