@@ -22,13 +22,7 @@ The project **does not** handle the actual granting of GitHub access for Filecoi
 
 ## Useful: how to preview FC invites
 
-Eventually, when you add someone to the list, they'll automatically receive an invite email. This is not yet implemented. If you want to preview an invite:
-
-- Open your console on the main invite page (`/manage-invites`)
-- Add someone. The console will log their invite's ID
-- Go to `/filecoin-invite/{id}` to see the invite.
-
-[Here's](https://protocol-legal.com/filecoin-invite/fake) a fake invite page. You'll get an error message and not be able to accept, but you can read the copy.
+When you add someone to the list, they'll automatically receive an invite email. If you want to preview an invite witout actually sending one, [here's](https://protocol-legal.com/filecoin-invite/fake) a fake invite page. You'll get an error message and not be able to accept, but you can review the copy.
 
 ## Project setup
 
