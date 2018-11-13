@@ -10,7 +10,7 @@
         <div v-else>
           <p>Invited by {{invite.invitedBy.name}} on {{formatDate(invite.invited)}}</p>
           <p v-if="invite.acceptanceMetadata">
-            Accepted on {{formatDate(invite.accepted)}} in {{ invite.acceptanceMetadata.city }}, {{ invite.acceptanceMetadata.region_code }}, {{ invite.acceptanceMetadata.country_name }}
+            Accepted on {{formatDate(invite.accepted)}} in {{ invite.acceptanceMetadata.city }}, {{ invite.acceptanceMetadata.region }}, {{ invite.acceptanceMetadata.country }}
           </p>
         </div>
       </div>
