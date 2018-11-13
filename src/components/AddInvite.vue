@@ -63,13 +63,6 @@ export default {
     },
     handleSubmit: async function() {
       if (this.step === 0) {
-        this.step++;
-        setTimeout(() => {
-          if (this.step === 1) this.step = 0;
-        }, 5000);
-        return;
-      }
-      if (this.step === 1) {
         const email = this.form.email.toLowerCase();
         const github = this.form.github.toLowerCase();
         const alreadyAdded = this.invites.filter(
@@ -81,6 +74,13 @@ export default {
           this.step = 0;
           return;
         }
+        this.step++;
+        setTimeout(() => {
+          if (this.step === 1) this.step = 0;
+        }, 5000);
+        return;
+      }
+      if (this.step === 1) {
         const payload = {
           ...this.form,
           email: this.form.email.toLowerCase(),
