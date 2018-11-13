@@ -8,14 +8,6 @@ Security rules are currently handled on the Firestore side & not reflected here.
 
 Deployment is a shell script to a DO droplet. Extremely improvable.
 
-## Current #todos:
-
-- TESTS!
-- Add user details that show more data (who invited, ToS acceptance metadata, revocation, notes)
-- Improve filtering, searching and sorting past invites
-- Paginate results (client side only is fine initially)
-- Make mobile friendly
-
 ## Security considerations
 
 `protocol-legal` uses _only_ Google's Cloud Firestore as a backend. All authentication and authorization is handled by Google's access control. Every read and write request goes directly from the client to the Cloud Firestore service, where it's compared at the resource level against that user's current Google account.
