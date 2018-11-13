@@ -71,6 +71,7 @@ export default {
         // firestore gives you a nice "added, modified, renewed" field that
         // lets us cleanly work with our local cache
         // the entire collection is "added" once at initial load
+        if (updates.docChanges().length === 0) return (this.loading = false);
         updates.docChanges().forEach(change => {
           const data = { ...change.doc.data(), id: change.doc.id };
           if (change.type === "added") {

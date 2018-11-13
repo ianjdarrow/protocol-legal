@@ -44,7 +44,7 @@ export default {
         console.error(err);
         this.$store.commit(
           "setFlash",
-          "Please log in with a valid @protocol.ai email address"
+          "Error logging you in. Did you provide a valid @protocol.ai email address?"
         );
       }
     }

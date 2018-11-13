@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     placeholder: function() {
-      if (this.suggestions.length === 0) return "";
+      if (this.suggestions.length === 0 || this.value.length == 0) return "";
       const best = this.suggestions[this.currentSuggestion];
       return `${this.value}${best.substring(this.value.length, best.length)}`;
     }

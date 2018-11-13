@@ -54,7 +54,7 @@ export default {
     searchOrganizations: function(search) {
       search = search.toLowerCase();
       return this.allOrganizations
-        .filter(i => i.toLowerCase().indexOf(search) > -1)
+        .filter(i => i.toLowerCase().indexOf(search) == 0)
         .sort(
           (a, b) =>
             levenshteinDistance(b, search) > levenshteinDistance(a, search)
@@ -90,8 +90,6 @@ export default {
         this.loading = true;
         try {
           const result = await this.db.collection("invites").add(payload);
-          // result.id has the ID we need
-          console.log("Invite code:", result.id);
           this.$store.commit("setFlash", `Invited ${this.form.email}!`);
           setTimeout(() => this.$store.commit("clearFlash"), 2500);
           this.clearForm();
@@ -100,7 +98,7 @@ export default {
           console.error(err);
           this.$store.commit(
             "setFlash",
-            "Error sending invite! Email ian@protocol.ai and tell him to fix it."
+            "Error sending invite! You may not have permission. Email ian@protocol.ai if you think this is an error."
           );
         }
         this.loading = false;
@@ -112,7 +110,8 @@ export default {
       this.form = {
         email: "",
         github: "",
-        name: ""
+        name: "",
+        organization: ""
       };
     }
   },
