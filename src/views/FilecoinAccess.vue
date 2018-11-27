@@ -3,58 +3,88 @@
   <div class="invite-container">
     <div class="top-section">
       <div class="left">
-        <img class="logo-top" src="../assets/invites/filecoin-logo-color.svg" />
-        <h1>Welcome to the<br />Filecoin private preview!</h1>
-        <hr />
+        <img class="logo-top" src="../assets/invites/filecoin-logo-color.svg">
+        <h1>Welcome to the
+          <br>Filecoin private preview!
+        </h1>
+        <hr>
         <p>Thanks for joining us as we work towards the public testnet and launch. We asked you to join because we value your deep expertise and thoughtful approach across a number of problem areas. Above all, we are grateful for your help, critique, PRs, ideas, and questions.</p>
       </div>
-      <div class="right"><img class="illustration-top" src="../assets/invites/invite-tos-top.png" /></div>
+      <div class="right">
+        <img class="illustration-top" src="../assets/invites/invite-tos-top.png">
+      </div>
     </div>
     <div class="bottom-section">
       <div class="left">
-        <img ref="rules" class="side-image" src="../assets/invites/invite-tos-side.png" />
+        <img ref="rules" class="side-image" src="../assets/invites/invite-tos-side.png">
       </div>
       <div class="right">
         <h1>Private preview rules</h1>
         <span class="muted subtext">Check to agree</span>
-        <hr />
+        <hr>
         <ul>
           <li>
-            <input type="checkbox" id="check1" v-model="checks[0]" class="styled-checkbox" />
-            <label for="check1">I agree not to share any code or information I receive as part of the private preview.</label>
+            <input type="checkbox" id="check1" v-model="checks[0]" class="styled-checkbox">
+            <label
+              for="check1"
+            >I agree not to share any code or information I receive as part of the private preview.</label>
           </li>
           <li>
-            <input type="checkbox" id="check2" v-model="checks[1]" class="styled-checkbox" />
-            <label for="check2">I agree not to use the Filecoin network to upload or share content that's illegal or violates the IP rights of others. I'll remove any such content if I'm able to do so.</label></li>
+            <input type="checkbox" id="check2" v-model="checks[1]" class="styled-checkbox">
+            <label
+              for="check2"
+            >I agree not to use the Filecoin network to upload or share content that's illegal or violates the IP rights of others. I'll remove any such content if I'm able to do so.</label>
+          </li>
           <li>
-            <input type="checkbox" id="check3" v-model="checks[2]" class="styled-checkbox" />
-            <label for="check3">I agree not to host a generally-accessible file upload service until the private preview ends (when the public testnet launches).</label></li>
+            <input type="checkbox" id="check3" v-model="checks[2]" class="styled-checkbox">
+            <label
+              for="check3"
+            >I agree not to host a generally-accessible file upload service until the private preview ends (when the public testnet launches).</label>
+          </li>
           <li>
-            <input type="checkbox" id="check4" v-model="checks[3]" class="styled-checkbox" />
-            <label for="check4">I agree not to blog, write, tweet, or otherwise publicly discuss the project or my participation until the public testnet launches.</label></li>
+            <input type="checkbox" id="check4" v-model="checks[3]" class="styled-checkbox">
+            <label
+              for="check4"
+            >I agree to report any security vulnerabilities I discover and not to abuse them in a way that creates a bad experience for other testers.</label>
+          </li>
           <li>
-            <input type="checkbox" id="check5" v-model="checks[4]" class="styled-checkbox" />
-            <label for="check5">I understand that I’m being granted access only for testing, collaboration, and feedback, and that there are no uptime or reliability guarantees.</label></li>
+            <input type="checkbox" id="check5" v-model="checks[4]" class="styled-checkbox">
+            <label
+              for="check5"
+            >I agree not to blog, write, tweet, or otherwise publicly discuss the project or my participation until the public testnet launches.</label>
+          </li>
+          <li>
+            <input type="checkbox" id="check6" v-model="checks[5]" class="styled-checkbox">
+            <label
+              for="check6"
+            >I understand that I’m being granted access only for testing, collaboration, and feedback, and that there are no uptime or reliability guarantees.</label>
+          </li>
         </ul>
-        <p>Your access may be revoked if you violate these rules. If you have any questions, email
-          <a href="mailto:legalrequests@protocol.ai">legalrequests@protocol.ai</a>, or feel free to reach out to another Protocol Labs contact.</p>
+        <p>
+          Your access may be revoked if you violate these rules. If you have any questions, email
+          <a
+            href="mailto:legalrequests@protocol.ai"
+          >legalrequests@protocol.ai</a>, or feel free to reach out to another Protocol Labs contact.
+        </p>
       </div>
     </div>
     <div class="footer">
       <h1>Get your access!</h1>
-      <hr />
+      <hr>
       <form @submit.prevent="handleSubmit">
         <div class="input mb-1 mt-1">
           <label>Your GitHub username</label>
           <input type="text" class="helper" v-model="form.github" ref="github">
           <span class="helper">@</span>
         </div>
-        <button type="submit" class="filecoin">
-          Agree and submit
-        </button>
+        <button
+          type="submit"
+          :disabled="invitee.email"
+          class="filecoin"
+        >{{invitee.email ? 'Agree and submit' : 'Invalid invite code'}}</button>
       </form>
     </div>
-    <div class="bottom-border" />
+    <div class="bottom-border"/>
   </div>
 </template>
 
@@ -77,7 +107,7 @@ export default {
       form: {
         github: ""
       },
-      checks: [false, false, false, false, false]
+      checks: [false, false, false, false, false, false]
     };
   },
   async mounted() {
@@ -88,9 +118,7 @@ export default {
         .doc(token)
         .get();
       if (!invite.exists) {
-        console.log("no such invite");
-        // this.$router.push('/');
-        // this.$store.commit("setFlash", "Invalid invite code");
+        this.$store.commit("setFlash", "Invalid invite code! Email your Protocol Labs contact if you think this is an error.");
         return;
       }
       this.invitee = invite.data();
@@ -107,6 +135,13 @@ export default {
   },
   methods: {
     handleSubmit: async function() {
+      if (!this.invitee.email) {
+        this.$store.commit(
+            "setFlash",
+            "You don't have a valid invite code."
+          );
+          return;
+      }
       if (!this.formValid) {
         if (!this.checks.every(c => c)) {
           this.$store.commit(
