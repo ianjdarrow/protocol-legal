@@ -1,19 +1,10 @@
 <template>
   <!-- The login page for PL users -->
   <div class="container login">
-    <img class="logo" src="../assets/pl.svg" />
+    <img class="logo" src="../assets/pl.svg">
     <div class="media">
       <button @click="handleSignin">Sign in</button>
     </div>
-    <h2>Building the legal framework<br /> for the next phase of humanity.</h2>
-    <ul>
-      <li>We must be experts in our mission, values, and technology to make good legal decisions.</li>
-      <li>We enable, protect, and fight for all players in the Protocol Labs ecosystem.</li>
-      <li>We take responsibility for solving the web’s hardest legal challenges.</li>
-      <li>We find creative, principled ways to make good ideas work.</li>
-      <li>We embrace simplicity.</li>
-
-    </ul>
   </div>
 </template>
 
