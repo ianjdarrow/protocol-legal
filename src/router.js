@@ -1,12 +1,12 @@
-import Vue from "vue";
-import Router from "vue-router";
-import NProgress from "nprogress";
+import Vue from 'vue';
+import Router from 'vue-router';
+import NProgress from 'nprogress';
 
-import Login from "./views/Login.vue";
-import Dashboard from "./views/Dashboard.vue";
-import InviteDetail from "./views/InviteDetail.vue";
+import Login from './views/Login.vue';
+import Dashboard from './views/Dashboard.vue';
+import InviteDetail from './views/InviteDetail.vue';
 
-import store from "./store";
+import store from './store';
 
 Vue.use(Router);
 
@@ -16,45 +16,45 @@ const checkLogin = (to, from, next) => {
   if (re.test(email)) {
     next();
   } else {
-    next(`/login${to.path ? `?redirect=${to.path}` : ""}`);
+    next(`/login${to.path ? `?redirect=${to.path}` : ''}`);
   }
 };
 
 const router = new Router({
-  mode: "history",
+  mode: 'history',
   routes: [
     {
-      path: "/filecoin-invite/:token",
-      name: "FilecoinAccess",
-      component: () => import("./views/FilecoinAccess.vue")
+      path: '/filecoin-invite/:token',
+      name: 'FilecoinAccess',
+      component: () => import('./views/FilecoinAccess.vue')
     },
     {
-      path: "/registration-confirmation",
-      name: "RegistrationConfirmation",
-      component: () => import("./views/RegistrationConfirmation.vue")
+      path: '/registration-confirmation',
+      name: 'RegistrationConfirmation',
+      component: () => import('./views/RegistrationConfirmation.vue')
     },
     {
-      path: "/login",
-      alias: "/",
-      name: "Login",
+      path: '/login',
+      alias: '/',
+      name: 'Login',
       component: Login
     },
     {
-      path: "/dashboard",
-      name: "Dashboard",
+      path: '/dashboard',
+      name: 'Dashboard',
       component: Dashboard,
       beforeEnter: checkLogin
     },
     {
-      path: "/manage-invites",
-      name: "ManageFilecoinInvites",
+      path: '/manage-invites',
+      name: 'ManageFilecoinInvites',
       component: () =>
-        import(/* webpackChunkName: "managefilecoininvites" */ "./views/ManageFilecoinInvites.vue"),
+        import(/* webpackChunkName: "managefilecoininvites" */ './views/ManageFilecoinInvites.vue'),
       beforeEnter: checkLogin
     },
     {
-      path: "/manage-invites/:id",
-      name: "InviteDetail",
+      path: '/manage-invites/:id',
+      name: 'InviteDetail',
       component: InviteDetail,
       beforeEnter: checkLogin
     }
@@ -68,6 +68,7 @@ router.beforeResolve((to, from, next) => {
 
 router.afterEach((to, from) => {
   NProgress.done();
+  store.commit('clearFlash');
 });
 
 export default router;

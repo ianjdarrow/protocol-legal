@@ -1,8 +1,17 @@
 <template>
   <div class="input">
     <label>{{label}}</label>
-    <input class="display" :placeholder="placeholder" />
-    <input class="actual" :value="value" @keydown.tab="handleEntry" @keydown.enter="handleEntry" @input="handleInput" @focus="handleInput" autocomplete="new-password" @blur="resetSuggestions" />
+    <input class="display" :placeholder="placeholder" disabled>
+    <input
+      class="actual"
+      :value="value"
+      @keydown.tab="handleEntry"
+      @keydown.enter="handleEntry"
+      @input="handleInput"
+      @focus="handleInput"
+      autocomplete="new-password"
+      @blur="resetSuggestions"
+    >
   </div>
 </template>
 <script>

@@ -79,7 +79,6 @@
         </div>
         <button
           type="submit"
-          :disabled="invitee.email"
           class="filecoin"
         >{{invitee.email ? 'Agree and submit' : 'Invalid invite code'}}</button>
       </form>
@@ -118,7 +117,10 @@ export default {
         .doc(token)
         .get();
       if (!invite.exists) {
-        this.$store.commit("setFlash", "Invalid invite code! Email your Protocol Labs contact if you think this is an error.");
+        this.$store.commit(
+          "setFlash",
+          "Invalid invite code! Email your Protocol Labs contact if you think this is an error."
+        );
         return;
       }
       this.invitee = invite.data();
@@ -136,11 +138,8 @@ export default {
   methods: {
     handleSubmit: async function() {
       if (!this.invitee.email) {
-        this.$store.commit(
-            "setFlash",
-            "You don't have a valid invite code."
-          );
-          return;
+        this.$store.commit("setFlash", "You don't have a valid invite code.");
+        return;
       }
       if (!this.formValid) {
         if (!this.checks.every(c => c)) {
