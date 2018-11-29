@@ -295,7 +295,8 @@ export default {
   }
 }
 span.tag {
-  background: rgba(black, 0.13);
+  background: rgba(black, 0.11);
+  border: 1px solid rgba(black, 0.18);
   min-width: 4rem;
   text-align: center;
   margin-left: 0.5rem;
@@ -305,6 +306,11 @@ span.tag {
   position: relative;
   display: inline-block;
   transform: translateY(-2px);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    opacity: 0.7;
+  }
 }
 input.off-page {
   position: absolute;
