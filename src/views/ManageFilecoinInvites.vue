@@ -1,23 +1,48 @@
 <template>
   <!-- State container and some layout for the main invite list view -->
   <div>
-    <Nav />
+    <Nav/>
     <div class="container">
-      <h2 class="mt-1">Filecoin invites
-        <span v-if="!loading" class="muted light">(<span v-if="filteredInvites.length < invites.length">{{filteredInvites.length}}/</span>{{ invites.length }})</span>
+      <h2 class="mt-1">
+        Filecoin invites
+        <span v-if="!loading" class="muted light tag" @click="addEmailsToClipboard">
+          <span v-if="filteredInvites.length < invites.length">{{filteredInvites.length}} /</span>
+          {{ invites.length }}
+        </span>
       </h2>
-      <button class="sm fullwidth mb-1" @click="toggleShow">
-        {{ show ? 'Hide form' : 'Add new user' }}
-      </button>
-      <AddInvite :show="show" :invites="invites" v-on:setSearch="setSearch" />
+      <button
+        class="sm fullwidth mb-1"
+        @click="toggleShow"
+      >{{ show ? 'Hide form' : 'Add new user' }}</button>
+      <AddInvite :show="show" :invites="invites" v-on:setSearch="setSearch"/>
       <div class="utility-row pb-1">
         <div class="filters">
           <div class="pills">
-            <button class="sm pill" :class="filter === 'all' ? 'active' : ''" @click="updateFilter('all')">All</button>
-            <button class="sm pill" :class="filter === 'pending' ? 'active' : ''" @click="updateFilter('pending')">Pending</button>
-            <button class="sm pill" :class="filter === 'waiting' ? 'active' : ''" @click="updateFilter('waiting')">Needs access</button>
-            <button class="sm pill" :class="filter === 'onboard' ? 'active' : ''" @click="updateFilter('onboard')">Onboarded</button>
-            <button class="sm pill" :class="filter === 'mine' ? 'active' : ''" @click="updateFilter('mine')">Mine</button>
+            <button
+              class="sm pill"
+              :class="filter === 'all' ? 'active' : ''"
+              @click="updateFilter('all')"
+            >All</button>
+            <button
+              class="sm pill"
+              :class="filter === 'pending' ? 'active' : ''"
+              @click="updateFilter('pending')"
+            >Pending</button>
+            <button
+              class="sm pill"
+              :class="filter === 'waiting' ? 'active' : ''"
+              @click="updateFilter('waiting')"
+            >Needs access</button>
+            <button
+              class="sm pill"
+              :class="filter === 'onboard' ? 'active' : ''"
+              @click="updateFilter('onboard')"
+            >Onboarded</button>
+            <button
+              class="sm pill"
+              :class="filter === 'mine' ? 'active' : ''"
+              @click="updateFilter('mine')"
+            >Mine</button>
           </div>
         </div>
         <div class="input search">
@@ -26,15 +51,25 @@
           <span class="clear-search" :hidden="search.length === 0" @click="search=''">&times;</span>
         </div>
       </div>
-      <RenderInvites :invites="paginatedInvites" :loading="loading" />
+      <RenderInvites :invites="paginatedInvites" :loading="loading"/>
       <div class="pagination" v-if="filteredInvites.length > resultsPerPage">
         <span @click="setPage(0)" :class="currentPage > 0 ? 'active' : 'inactive'">&lt;&lt;</span>
-        <span @click="setPage(currentPage - 1)" :class="currentPage > 0 ? 'active' : 'inactive'">&lt;</span>
+        <span
+          @click="setPage(currentPage - 1)"
+          :class="currentPage > 0 ? 'active' : 'inactive'"
+        >&lt;</span>
         <span>{{ currentPage + 1 }}/{{ Math.ceil(filteredInvites.length / resultsPerPage) }}</span>
-        <span @click="setPage(currentPage + 1)" :class="currentPage < totalPages - 1 ? 'active' : 'inactive'">></span>
-        <span @click="setPage(totalPages - 1)" :class="currentPage < totalPages - 1 ? 'active' : 'inactive'">>></span>
+        <span
+          @click="setPage(currentPage + 1)"
+          :class="currentPage < totalPages - 1 ? 'active' : 'inactive'"
+        >></span>
+        <span
+          @click="setPage(totalPages - 1)"
+          :class="currentPage < totalPages - 1 ? 'active' : 'inactive'"
+        >>></span>
       </div>
       <div class="pagination muted" v-else>End of results</div>
+      <input class="off-page" ref="copy" v-model="emailList">
     </div>
   </div>
 </template>
@@ -108,7 +143,21 @@ export default {
       if (page > this.currentPage)
         this.currentPage = Math.min(page, this.totalPages - 1);
     },
-
+    addEmailsToClipboard: function() {
+      this.$refs.copy.select();
+      try {
+        if (this.filteredInvites.length === 0) throw new Error();
+        if (document.execCommand("copy")) {
+          this.$store.commit("setFlash", `Copied current emails to clipboard`);
+        } else {
+          throw new Error();
+        }
+      } catch (e) {
+        this.$store.commit("setFlash", "Error copying emails!");
+      } finally {
+        setTimeout(() => this.$store.commit("clearFlash"), 2000);
+      }
+    },
     // this is a horrible hack. i had surprising issues getting Vue to
     // re-render a computed property when the filter function changed.
     // so, we update what's basically duplicated and derived
@@ -160,6 +209,9 @@ export default {
     },
     totalPages: function() {
       return Math.ceil(this.filteredInvites.length / this.resultsPerPage);
+    },
+    emailList: function() {
+      return this.filteredInvites.map(i => i.email).join(", ");
     },
     ...mapState({
       db: state => state.db,
@@ -241,5 +293,21 @@ export default {
   span.inactive {
     opacity: 0.25;
   }
+}
+span.tag {
+  background: rgba(black, 0.13);
+  min-width: 4rem;
+  text-align: center;
+  margin-left: 0.5rem;
+  padding: 0.35rem 1rem 0.35rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  position: relative;
+  display: inline-block;
+  transform: translateY(-2px);
+}
+input.off-page {
+  position: absolute;
+  top: -100%;
 }
 </style>
