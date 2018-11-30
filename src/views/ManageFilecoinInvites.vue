@@ -200,6 +200,7 @@ export default {
     updateFilter: function(f) {
       this.filter = f;
       this.deriveFilteredInvites();
+      this.currentPage = 0;
     }
   },
   computed: {
